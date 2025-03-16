@@ -8,7 +8,6 @@ import "./productDetails.css";
 import { addToCart } from "./cartSlice";
 
 function ProductDetails() {
-    // const navigate = useNavigate();
     const { id } = useParams();
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false); // ✅ حالة التحميل
@@ -30,13 +29,17 @@ function ProductDetails() {
     }
 
     const handleAddToCart = async () => {
-        setIsLoading(true); // ✅ تفعيل التحميل
+        setIsLoading(true); // ✅ تفعيل اللودينج
         await dispatch(addToCart(data));
+
+        // ✅ بعد انتهاء التحميل، يتم إيقاف اللودينج أولاً
+        setIsLoading(false);
+
+        // ✅ ثم بعد نصف ثانية، تظهر الرسالة
         setTimeout(() => {
-            setIsLoading(false); // ✅ إيقاف التحميل
-            setShowMessage(true); // ✅ إظهار الرسالة
-            setTimeout(() => setShowMessage(false), 3000); // ✅ إخفاء الرسالة بعد 3 ثوانٍ
-        }, 2000);
+            setShowMessage(true);
+            setTimeout(() => setShowMessage(false), 3000); // ✅ تختفي بعد 3 ثواني
+        }, 500);
     };
 
     return (
