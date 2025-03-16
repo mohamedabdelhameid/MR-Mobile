@@ -1,25 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import LogoImg from './img/mobileLogo.svg';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setCartFromLocalStorage, selectCartCount } from "./cartSlice";
+import { Link } from "react-router-dom";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const dispatch = useDispatch();
+    const cartCount = useSelector(selectCartCount); // ✅ الحصول على عدد المنتجات في السلة
+
+    useEffect(() => {
+        dispatch(setCartFromLocalStorage());
+    }, [dispatch]);
+
+    return (
+        <>
+            <img src={LogoImg} alt="" />
+            <h1 className="container" data-aos="fade-left" data-aos-duration="1500">MR Mobile</h1>
+            <Link to="/products">product</Link> <br />
+            <Link to="yourCart">cart ({cartCount})</Link> {/* ✅ عرض عدد المنتجات */}
+        </>
+    );
 }
 
 export default App;
