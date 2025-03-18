@@ -28,8 +28,8 @@
 .div-0 .div-1{
   border-style: none;
   border-radius: 30px;
-  box-shadow: 0px 0px 10px 10px gray;
-  padding: 15px;
+  /* box-shadow: 0px 0px 10px 10px gray; */
+  padding: 20px;
 }
 
 .cart-message {
@@ -120,4 +120,15 @@
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+
+.product-card {
+  /* box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15); */
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.5) !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.product-card:hover {
+  transform: scale(0.99) translateY(-5px);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }

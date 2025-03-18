@@ -4,6 +4,7 @@ import { addToCart } from "./cartSlice";
 import { useDispatch } from "react-redux";
 import loader from './img/mobileLogo.svg';
 import "./products.css";
+import { Footer } from "./home";
 
 export default function Ffetch() {
     const dispatch = useDispatch();
@@ -49,17 +50,18 @@ export default function Ffetch() {
     };
 
     return (
+        <>
         <div className="div-0 container" id="pproducct">
             {/* ✅ الرسالة المتحركة */}
             {showMessage && <div className="cart-message">{messageText}</div>}
 
             {products.length === 0 ? (
                 <div id="loading-spinner" style={{position: "fixed", top: "0", left: "0", width: "100%", height: "100%", background: "white", display: "flex", justifyContent: "center", alignItems: "center", zIndex: "1000"}}>
-                    <img src={loader} alt="" />
+                    <img src={loader} alt="" width="300px"/>
                 </div>
             ) : (
                 products.map((data) => (
-                    <div className="div-1 bblockk" key={data._id}>
+                    <div className="div-1 product-card bblockk" key={data._id}>
                         <img className="imgProduct img-fluid" src={data.imageCover} onClick={() => navigate(`/product/${data._id}`)} alt={data.title} />
                         <div className="div2flex">
                             <p id="title">النوع : {data.title}</p>
@@ -76,6 +78,8 @@ export default function Ffetch() {
                 ))
             )}
         </div>
+        <Footer />
+        </>
     );
 }
 

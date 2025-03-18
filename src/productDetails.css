@@ -9,12 +9,10 @@
   padding: 20px;
 }
 
-/* تغيير لون النقطة النشطة إلى الأخضر */
 .carousel-indicators .active {
   background-color: green !important;
 }
 
-/* تغيير لون النقاط غير النشطة إلى الرمادي */
 .carousel-indicators button {
   background-color: black !important;
 }
@@ -34,6 +32,9 @@
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
   animation: slideDown 0.5s ease-in-out, fadeOut 0.5s ease-in-out 4.5s;
   z-index: 1000;
+  max-width: 300px !important;
+  text-align: center;
+  word-wrap: break-word;
 }
 
 @keyframes slideDown {
@@ -56,43 +57,6 @@
   }
 }
 
-
-
-.cart-message {
-  position: fixed;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #28a745;
-  color: white;
-  padding: 10px 20px;
-  font-size: 18px;
-  font-weight: bold;
-  border-radius: 5px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-  animation: slideDown 0.5s ease-in-out, fadeOut 0.5s ease-in-out 4.5s;
-  z-index: 1000;
-}
-
-@keyframes slideDown {
-  from {
-    top: -50px;
-    opacity: 0;
-  }
-  to {
-    top: 10px;
-    opacity: 1;
-  }
-}
-
-@keyframes fadeOut {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
 
 .loader {
   border: 3px solid #f3f3f3;
@@ -108,4 +72,23 @@
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+
+
+.quantity-input {
+  width: 80px;
+  height: 40px;
+  text-align: center;
+  font-size: 18px;
+  border: 2px solid #28a745;
+  border-radius: 8px;
+  margin: 10px;
+  outline: none;
+  transition: 0.3s;
+}
+
+.quantity-input:focus {
+  border-color: #218838;
+  box-shadow: 0px 0px 8px rgba(40, 167, 69, 0.5);
 }

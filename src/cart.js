@@ -9,6 +9,7 @@ import {
 import { selectCartItems } from "./cartSlice";
 import "./cart.css";
 import Swal from "sweetalert2";
+import { Footer } from "./home";
 
 function Cart() {
   const dispatch = useDispatch();
@@ -115,7 +116,7 @@ function Cart() {
         ))}
       </div>
 
-      <h1>سلة المشتريات</h1>
+      <h1 className="my-3"> محتويات سلة</h1>
       {isCartEmpty ? (
         <h1 className="text-danger p- container">السلة فارغة</h1>
       ) : (
@@ -148,6 +149,7 @@ function Cart() {
           <button onClick={handleDeleteAll} className="btn btn-danger mx-1">حذف كل المنتجات</button>
         </div>
       )}
+      <Footer />
     </div>
   );
 }

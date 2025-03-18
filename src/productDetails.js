@@ -6,12 +6,14 @@ import loader from './img/mobileLogo.svg';
 import "./products.css";
 import "./productDetails.css";
 import { addToCart } from "./cartSlice";
+import { Footer } from './home';
 
 function ProductDetails() {
     const { id } = useParams();
     const dispatch = useDispatch();
-    const [isLoading, setIsLoading] = useState(false); // ✅ حالة التحميل
-    const [showMessage, setShowMessage] = useState(false); // ✅ حالة الرسالة
+    const [isLoading, setIsLoading] = useState(false);
+    const [showMessage, setShowMessage] = useState(false);
+    const [quantity, setQuantity] = useState(1); // ✅ تخزين الكمية
 
     useEffect(() => {
         dispatch(fetchProducts());
@@ -28,21 +30,29 @@ function ProductDetails() {
         );
     }
 
+    const handleQuantityChange = (e) => {
+        const newQuantity = parseInt(e.target.value, 10);
+        if (!isNaN(newQuantity) && newQuantity > 0) {
+            setQuantity(newQuantity);
+        }
+    };
+
     const handleAddToCart = async () => {
-        setIsLoading(true); // ✅ تفعيل اللودينج
-        await dispatch(addToCart(data));
+        setIsLoading(true);
 
-        // ✅ بعد انتهاء التحميل، يتم إيقاف اللودينج أولاً
+        for (let i = 0; i < quantity; i++) {
+            await dispatch(addToCart(data));
+        }
+
         setIsLoading(false);
-
-        // ✅ ثم بعد نصف ثانية، تظهر الرسالة
         setTimeout(() => {
             setShowMessage(true);
-            setTimeout(() => setShowMessage(false), 3000); // ✅ تختفي بعد 3 ثواني
+            setTimeout(() => setShowMessage(false), 3000);
         }, 500);
     };
 
     return (
+        <>
         <div className="product-details container">
             <div id="carouselExample" className="carousel slide" data-bs-ride="carousel" data-bs-touch="true">
                 <div className="carousel-indicators">
@@ -71,14 +81,26 @@ function ProductDetails() {
                 {data.ram && <p>الرام : {data.ram}</p>}
                 {data.description && <p>المواصفات : {data.description}</p>}
                 <p id="Price">السعر : {data.price} جنية</p>
-                <div className="btns">
-                    <button id="btn-1" onClick={handleAddToCart} className="btn btn-success w-100">
-                        {isLoading ? "Loading..." : "إضافة إلى عربة التسوق"} {/* ✅ زر التحميل */}
+                
+                <div className="btns row align-items-baseline">
+                    <input
+                        type="number"
+                        min="1"
+                        value={quantity}
+                        onChange={handleQuantityChange}
+                        className="quantity-input col-2 p-3"
+                    />
+
+                    <button id="btn-1" onClick={handleAddToCart} className="btn btn-success col-9">
+                        {isLoading ? "Loading..." : "إضافة إلى عربة التسوق"}
                     </button>
-                    {showMessage && <div className="cart-message">✔ تم إضافة المنتج إلى العربة بنجاح!</div>} {/* ✅ الرسالة */}
+
+                    {showMessage && <div className="cart-message">✔ تم إضافة المنتج إلى العربة بنجاح!</div>}
                 </div>
             </div>
         </div>
+        <Footer />
+        </>
     );
 }
 

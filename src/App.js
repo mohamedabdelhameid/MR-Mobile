@@ -30,6 +30,8 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCartFromLocalStorage, selectCartCount } from "./cartSlice";
 import { Link } from "react-router-dom";
+import Home from './home';
+import ThemeSwitch from './LIGHT&DARK';
 
 function App() {
     const dispatch = useDispatch();
@@ -47,6 +49,9 @@ function App() {
             
             {/* ✅ عرض العدد فقط إذا كان أكبر من 0 */}
             <Link to="yourCart">cart {cartCount > 0 && `(${cartCount})`}</Link>
+
+            <ThemeSwitch />
+            <Home />
         </>
     );
 }
