@@ -18,6 +18,7 @@ export function Footer() {
             مستر موبايل
           </Link>
         </b>
+        <p>*كل ما هو جديد في عالم الهواتف الذكيه*</p>
         2025.
       </p>
       <div>
@@ -163,7 +164,7 @@ function Home() {
           ))}
         </div>
       )}
-      <Footer />
+    {/* <Footer/> */}
     </div>
   );
 }

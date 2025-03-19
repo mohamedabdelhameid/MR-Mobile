@@ -1,0 +1,162 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.custom-navbar {
+  width: 100%;
+  padding: 10px 0;
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+  transition: background 0.3s;
+}
+
+/* الوضع الداكن والفاتح */
+.custom-navbar.dark {
+  background-color: #1e1e1e;
+  color: white;
+}
+
+.custom-navbar.light {
+  background-color: white;
+  color: black;
+}
+
+.custom-navbar.dark .nav-links a {
+  color: white;
+}
+
+.custom-navbar.light .nav-links a {
+  color: black;
+}
+
+.logo {
+  width: 150px;
+  height: 50px;
+}
+
+.nav-links {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.befor {
+  position: relative;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+.befor::before {
+  content: "";
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: green;
+  transform: scaleX(0);
+  transition: transform 0.5s ease-in-out;
+}
+
+.befor:hover::before {
+  transform: scaleX(1);
+}
+
+.befor.active {
+  color: green;
+}
+
+/* فورم البحث */
+.search-form {
+  max-width: 250px;
+  margin-left: 10%;
+}
+
+/* زر تبديل الوضع */
+#theme_switch {
+  cursor: pointer;
+}.dark-mode {
+  background-color: #121212;
+  color: white;
+}
+
+/* الوضع الفاتح */
+.light-mode {
+  background-color: white;
+  color: black;
+} .dark-mode .btn-outline-success {
+  border-color: white;
+  color: white;
+}
+
+.light-mode .btn-outline-success {
+  border-color: black;
+  color: black;
+}
+
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* أيقونة السلة */
+.cart-icon {
+  color: green;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: red;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* الشاشات الصغيرة */
+@media (max-width: 991px) {
+  .nav-links {
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+  }
+  
+  .search-form {
+      max-width: 100%;
+      justify-content: center;
+      margin-top: 10px;
+  }
+
+  .cart-icon, #theme_switch {
+      order: -1;
+      margin-right: auto;
+  }
+
+  /* تصحيح ظهور النص في الشاشات الصغيرة */
+  .nav-links a {
+      text-align: center;
+      display: block;
+      width: 100%;
+  }
+}
