@@ -98,7 +98,7 @@ function Home() {
   const products = useSelector((state) => state.products.items || []);
   const randomProducts = [...products]
     .sort(() => 0.5 - Math.random())
-    .slice(0, 14);
+    .slice(0, 10);
 
   const handleAddToCart = async (product) => {
     setIsLoading(true);

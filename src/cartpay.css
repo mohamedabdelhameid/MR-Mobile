@@ -2,7 +2,7 @@
   max-width: 600px;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 10);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
   transition: background 0.3s, color 0.3s;
   margin: auto;
@@ -12,7 +12,6 @@
 
 
 
-/* الحقول */
 .form-group {
   text-align: right;
   display: flex;
@@ -34,7 +33,6 @@
   margin: 10px;
 }
 
-/* حقول الإدخال في الوضع الفاتح */
 .form-group input,
 .form-group select {
   border: 2px solid #28a745;
@@ -48,7 +46,6 @@
   box-shadow: 0px 0px 8px rgba(40, 167, 69, 0.5);
 }
 
-/* حقول الإدخال في الوضع الداكن */
 .dark-mode .form-group input,
 .dark-mode .form-group select {
   border: 2px solid #888;
@@ -62,7 +59,6 @@
   box-shadow: 0px 0px 8px rgba(0, 255, 0, 0.5);
 }
 
-/* رسالة النجاح */
 .payment-success {
   padding: 10px;
   font-weight: bold;
@@ -70,19 +66,16 @@
   margin-bottom: 10px;
 }
 
-/* الوضع الفاتح */
 .payment-success {
   background-color: #28a745;
   color: white;
 }
 
-/* الوضع الداكن */
 .dark-mode .payment-success {
   background-color: #0f0;
   color: #000;
 }
 
-/* رسالة الخطأ */
 .error-text {
   color: red;
   font-size: 14px;

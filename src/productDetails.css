@@ -1,13 +1,15 @@
 .product-details{
   display: grid;
   grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
-  box-shadow: 0px 0px 10px 10px gray;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   align-items: center;
   justify-content: center;
   direction: rtl;
   margin: 20px auto;
   padding: 20px;
   margin-top: 50px;
+  border: none;
+  border-radius: 30px;
 }
 
 .carousel-indicators .active {
