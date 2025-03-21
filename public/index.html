@@ -2,26 +2,14 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="mobileLogo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="apple-touch-icon" href="mobileLogo.png" />
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <link rel="icon" href="image/mobileLogo.png" type="jpg">
+    <link rel="apple-touch-icon" href="mobileLogo.png"/>
+    <link rel="icon" href="mobileLogo.png" type="png">
     <title>MR Mobile</title>
     <link rel="canonical" href="https://mr-mobile.com" />
-    <meta name="description" content="مستر موبايل - وجهتك الأولى لأحدث وأفضل هواتف الأندرويد، المراجعات، المواصفات، الأسعار، وأحدث الأخبار في عالم الهواتف الذكية. اكتشف كل ما تحتاجه عن هواتف سامسونج، شاومي، أوبوالمزيد!">
+    <meta name="description" content="مستر موبايل - وجهتك الأولى لأحدث وأفضل هواتف الأندرويد، المراجعات، المواصفات، الأسعار، وأحدث الأخبار في عالم الهواتف الذكية. اكتشف كل ما تحتاجه عن هواتف سامسونج، شاومي، أوبو والمزيد!">
     <meta name="keywords" content="مستر موبايل, هواتف أندرويد, مراجعات الهواتف, مواصفات الهواتف, أسعار الهواتف, سامسونج, شاومي, أوبو, ريلمي, أفضل الهواتف, أخبار التقنية">
-    <!-- CSS -->
-    <link rel="stylesheet" href="normalize.css" />
-    <!-- BOOTSTRAP -->
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      integrity="sha384-TX8t27EcRE3e/ihU7zmQp4YYz3bU6N0Q5z5F8F3E4lb7Sz/NBDlF/YbsMhX2xyx"
-      crossorigin="anonymous"
-    />
-    <!-- Font Awesome -->
+    <link rel="stylesheet" href="normalize.css" media="print" onload="this.onload=null;this.media='all';">
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
@@ -29,13 +17,11 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <!-- AOS -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
       body, html {
         margin: 0;
         padding: 0;
-        overflow-x: hidden; /* منع الشريط الأفقي */
+        overflow-x: hidden;
       }
       html{
         scroll-behavior: smooth;
@@ -62,7 +48,6 @@
           opacity: 0.2;
         }
       }
-      /* progress bar */
       .progress-container2 {
         width: 100%;
         height: 5px;
@@ -72,7 +57,10 @@
         left: 0;
         z-index: 1000;
       }
-      .bodyDark .progress-container2{
+      .progress-bar2 {
+        will-change: width;
+      }
+      .dark-mode .progress-container2{
         background: gray;
       }
 
@@ -89,38 +77,26 @@
     <div id="root"></div>
     
 
-    <!-- spinner -->
     <div id="loading-spinner" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; display: flex; justify-content: center; align-items: center; z-index: 1000;">
-        <img src="mobileLogo.svg" alt="" width="300px">
+        <img src="%PUBLIC_URL%/mobileLogo.svg" alt="" width="300px" loading="lazy">
     </div>
 
 
-    <!-- progress bar -->
     <div class="progress-container2">
       <div class="progress-bar2" id="progress-bar"></div>
     </div>
 
 
-    <script src="bootstrap/js/popper.min.js"></script>
-    <script src="bootstrap/js/jquery-3.7.1.min.js"></script>
-    <script src="bootstrap/js/bootstrap.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-kenU1KFdBIe4zVFvjz1U26st5rF5yAC7b4Jb8zVOp6YbGII0yAnsjMEL7w4Psn9b"
-      crossorigin="anonymous"
-      defer
-    ></script>
     <script>
       const progressBar = document.getElementById("progress-bar");
-
-      document.addEventListener('DOMContentLoaded', function () {
-        AOS.init();
-      });
       
-      window.addEventListener('load', function () {
-        document.getElementById('loading-spinner').style.display = 'none';
+      window.addEventListener("load", function () {
+        const spinner = document.getElementById("loading-spinner");
+        spinner.style.transition = "opacity 0.5s";
+        spinner.style.opacity = "0";
+        setTimeout(() => spinner.style.display = "none", 500);
       });
+
 
       window.addEventListener("scroll", () => {
         requestAnimationFrame(() => {

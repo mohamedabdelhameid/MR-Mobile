@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 import { addToCart } from './cartSlice';
 import './productCard.css';
+import { FaCartPlus } from 'react-icons/fa';
 
 function ProductCard({ data }) {
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ function ProductCard({ data }) {
         src={data?.imageCover}
         onClick={() => navigate(`/product/${data._id}`)}
         alt={data.title || "Product Image"}
+        loading="lazy"
       />
       <div className="div2flex">
         <p id="title" className='ppopo'>{data.title || "Unknown Product"}</p>
@@ -36,7 +38,7 @@ function ProductCard({ data }) {
             navigate("/yourCart");
           }}
         >
-          إشتري الآن
+          أضف الى {<FaCartPlus />}
         </button>
 
         </div>

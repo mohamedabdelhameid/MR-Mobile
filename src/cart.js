@@ -10,12 +10,14 @@ import { selectCartItems } from "./cartSlice";
 import "./cart.css";
 import Swal from "sweetalert2";
 import { Footer } from "./home";
+import { useNavigate } from "react-router-dom";
 
 function Cart() {
   const dispatch = useDispatch();
   const cart = useSelector(selectCartItems);
   const [messages, setMessages] = useState([]); 
   const [isMessageActive, setIsMessageActive] = useState(false); 
+  const navigate = useNavigate();
 
   const isCartEmpty = cart.length === 0; // ✅ التحقق من حالة السلة
   const totalPrice = cart.reduce(
@@ -118,13 +120,13 @@ function Cart() {
 
       <h1 className="my-3"> محتويات سلة</h1>
       {isCartEmpty ? (
-        <h1 className="text-danger p- container">السلة فارغة</h1>
+        <h1 className="text-danger container" style={{minHeight:'60vh'}}>السلة فارغة</h1>
       ) : (
         <ol className="container row">
           {cart.map((item) => (
             <li key={item._id}>
               <div className="image-container">
-                <img src={item.imageCover} alt={item.title} />
+                <img src={item.imageCover} alt={item.title} loading="lazy"/>
               </div>
               <div className="content">
                 <p>النوع : {item.title}</p>
@@ -145,7 +147,9 @@ function Cart() {
       {!isCartEmpty && ( // ✅ إخفاء الأزرار عند فراغ السلة
         <div className="Div-buttons-buy-delete">
           <h3>السعر الكلي: {totalPrice} جنية</h3>
-          <button className="btn btn-success mx-1">شراء الآن</button>
+          <button className="btn btn-success mx-1" onClick={()=>{
+            navigate('/PaymentForm', { state: { totalPrice } });
+          }}>شراء الآن</button>
           <button onClick={handleDeleteAll} className="btn btn-danger mx-1">حذف كل المنتجات</button>
         </div>
       )}

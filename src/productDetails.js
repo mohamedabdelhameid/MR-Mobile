@@ -64,12 +64,12 @@ function ProductDetails() {
                     {data.images && data.images.length > 0 ? (
                         data.images.map((image, index) => (
                             <div key={index} className={`carousel-item ${index === 0 ? "active" : ""}`}>
-                                <img className="d-block w-100" src={image} alt={`Slide ${index + 1}`} />
+                                <img className="d-block w-100" src={image} alt={`Slide ${index + 1}`} loading="lazy"/>
                             </div>
                         ))
                     ) : (
                         <div className="carousel-item active">
-                            <img className="d-block w-100" src={loader} alt="No images available" />
+                            <img className="d-block w-100" src={loader} alt="No images available" loading="lazy"/>
                         </div>
                     )}
                 </div>

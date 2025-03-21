@@ -3,15 +3,17 @@
 }
 .div-0{
   display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
+  grid-template-columns: repeat(auto-fit,minmax(150px,1fr));
   gap: 20px;
   direction: rtl;
   justify-content: center;
   padding: 15px;
+  min-height: 300px;
 }
 .div-0 .imgProduct{
   width: 100%;
   border-radius: 30px;
+  min-height: 100px;
 }
 .div-0 .div-1{
   border-style: none;
@@ -19,10 +21,13 @@
   box-shadow: 0px 0px 10px 10px gray;
   padding: 15px;
 }
-
+.div-0 .div-1 p{
+  max-height: 25px;
+  overflow: hidden;
+}
 .cart-message {
   position: fixed;
-  top: 0;
+  top: 20px !important;
   left: 50%;
   transform: translateX(-50%);
   background-color: #28a745;
@@ -57,43 +62,6 @@
 }
 
 
-
-.cart-message {
-  position: fixed;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #28a745;
-  color: white;
-  padding: 10px 20px;
-  font-size: 18px;
-  font-weight: bold;
-  border-radius: 5px;
-  /* box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); */
-  animation: slideDown 0.5s ease-in-out, fadeOut 0.5s ease-in-out 4.5s;
-  z-index: 1000;
-}
-
-@keyframes slideDown {
-  from {
-    top: -50px;
-    opacity: 0;
-  }
-  to {
-    top: 10px;
-    opacity: 1;
-  }
-}
-
-@keyframes fadeOut {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
-
 .product-card {
   box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.5) !important;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -103,7 +71,6 @@
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* ✅ تحسين تنسيق اللودينج */
 .loading-spinner {
   position: fixed;
   top: 10px;
@@ -119,7 +86,7 @@
 
 .message-box {
   position: fixed;
-  top: 0;
+  top: 20px;
   left: 50%;
   transform: translateX(-50%);
   background-color: #28a745;
@@ -252,9 +219,9 @@
   opacity: 1;
 }
 .GRIDING {
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: center;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
 }
 
 @media (max-width: 768px) {
@@ -262,6 +229,7 @@
     flex-wrap: wrap;
   }
 }
+
 .flexable{
   display: flex;
     flex-wrap: nowrap;
@@ -269,7 +237,7 @@
     align-items: center;
 }
 
-.bodyDark .socialMedia i:hover {
+.dark-mode .socialMedia i:hover {
   color: #f6f6f6;
   border-color: #f6f6f6;
 }
