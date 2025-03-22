@@ -12,6 +12,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import MyNavbar from "./navbar";
 import Contact from "./contact";
+import SearchComponent from './searchItem';
+import PaymentForm from './cartPay';
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
@@ -25,6 +28,8 @@ root.render(
           <Route path="/Products" element={<Ffetch />} />
           <Route path="/yourCart" element={<Cart />} />
           <Route path="/product/:id" element={<ProductDetails />} />
+          <Route path="/searchresult" element={<SearchComponent />} />
+          <Route path="/PaymentForm" element={<PaymentForm />} />
         </Routes>
       </BrowserRouter>
     </Provider>

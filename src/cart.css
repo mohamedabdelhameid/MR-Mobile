@@ -1,11 +1,11 @@
 ol {
   direction: rtl;
+  min-height: 60vh;
 }
 ol li {
   width: 100%;
   margin: 15px auto;
   padding: 10px;
-  /* box-shadow: 0px 0px 10px 10px gray; */
   border-radius: 20px;
   list-style: none;
   position: relative;
@@ -13,8 +13,10 @@ ol li {
   align-items: center;
   justify-content: space-between;
   gap: 15px;
-  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.13);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: fit-content;
+  cursor: pointer;
 }
 
 ol li:hover {

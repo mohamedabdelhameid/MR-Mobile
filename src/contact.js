@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { FaPhone, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
+import {FaMapMarkerAlt, FaWhatsapp } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { Footer } from "./home";
 
 const Contact = () => {
   const [message, setMessage] = useState(""); // حالة لحفظ الرسالة
@@ -18,7 +19,8 @@ const Contact = () => {
   };
 
   return (
-    <div style={{ margin: "10%", padding: "10px" }} className="container ">
+    <>
+    <div style={{ marginTop: "50px", padding: "10px" ,direction:"rtl",maxWidth:'800px' }} className="container ">
       <h2 className="mb-4">تواصل معنا</h2>
       {message && <div className="alert alert-success">{message}</div>}
       
@@ -63,11 +65,14 @@ const Contact = () => {
       </form>
 
       <div className="mt-4">
-        <p><FaMapMarkerAlt /> العنوان: القاهرة، مصر</p>
-        <p><FaPhone /> الهاتف: 0123456789</p>
-        <p><FaEnvelope /> البريد الإلكتروني: info@example.com</p>
+        <p><FaMapMarkerAlt />شارع 15، سوهاج</p>
+        <p><FaMapMarkerAlt />شارع احمد بدوي، المراغة</p>
+        <p><FaMapMarkerAlt />شارع عبدالمنعم رياض، المراغة</p>
+        <p><FaWhatsapp />201103412849+</p>
       </div>
     </div>
+    <Footer />
+    </>
   );
 };
 
