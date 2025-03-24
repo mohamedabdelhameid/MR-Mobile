@@ -1,3 +1,6 @@
+.notFound .navLink{
+  display: none;
+}
 .error{
   direction: rtl;
 }

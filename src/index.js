@@ -10,7 +10,6 @@ import ProductDetails from './productDetails';
 import Cart from './cart';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
-import MyNavbar from "./navbar";
 import Contact from "./contact";
 import SearchComponent from './searchItem';
 import PaymentForm from './cartPay';
@@ -21,7 +20,6 @@ root.render(
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
-      <MyNavbar/>
         <Routes>
 
           <Route path="/" element={<App />} />
