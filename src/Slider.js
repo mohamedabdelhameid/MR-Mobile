@@ -118,7 +118,7 @@ function ControlledCarousel({ setSelectedCategory }) {
   };
   const navigate = useNavigate();
   return (
-    <Carousel interval={3000} className="mt-3 slider">
+    <Carousel interval={3000} className="slider">
       <Carousel.Item
         onClick={() => {
           navigate("/#productFilter");

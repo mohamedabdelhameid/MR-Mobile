@@ -14,6 +14,7 @@ import MyNavbar from "./navbar";
 import Contact from "./contact";
 import SearchComponent from './searchItem';
 import PaymentForm from './cartPay';
+import NotFound from './notFound';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -30,6 +31,7 @@ root.render(
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/searchresult" element={<SearchComponent />} />
           <Route path="/PaymentForm" element={<PaymentForm />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </Provider>

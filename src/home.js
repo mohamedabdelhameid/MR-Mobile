@@ -46,16 +46,16 @@ export function Footer() {
           <div className="hoverShow">
           <span className="fw-bold"> محمد محمود حامد </span>
             <div className="socialMedia m-3">
-              <Link target="_blank">
+              <Link to='https://github.com/mohamedmahmoudhamid' target="_blank">
                 <i className="fa-brands fa-github m-2"></i>
               </Link>
-              <Link target="_blank">
+              <Link to='https://www.linkedin.com/in/mohamed-mahmoud-hamid-2b1b44313?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app' target="_blank">
                 <i className="fa-brands fa-linkedin-in m-2"></i>
               </Link>
-              <Link target="_blank">
+              <Link to='https://wa.me/201280538625' target="_blank">
                 <i className="fa-brands fa-whatsapp m-2"></i>
               </Link>
-              <Link target="_blank">
+              <Link to='https://www.facebook.com/profile.php?id=100022375840375&mibextid=ZbWKwL' target="_blank">
                 <i className="fa-brands fa-facebook-f m-2"></i>
               </Link>
             </div>

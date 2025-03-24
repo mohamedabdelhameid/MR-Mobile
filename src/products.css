@@ -116,7 +116,7 @@
   padding: 10px;
   gap: 10px;
   border-radius: 8px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 20);
+  box-shadow: 0px 2px 1px rgba(0, 0, 0, 0.2);
   width: fit-content;
 }
 

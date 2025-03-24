@@ -3,10 +3,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from './productSlice';
 import { useParams } from 'react-router-dom';
 import loader from './img/mobileLogo.svg';
+import { useNavigate } from "react-router-dom";
 import "./products.css";
 import "./productDetails.css";
 import { addToCart } from "./cartSlice";
 import { Footer } from './home';
+import { AiOutlineClose } from "react-icons/ai";
+// import { Link, useNavigate } from "react-router-dom";
 
 function ProductDetails() {
     const { id } = useParams();
@@ -14,7 +17,7 @@ function ProductDetails() {
     const [isLoading, setIsLoading] = useState(false);
     const [showMessage, setShowMessage] = useState(false);
     const [quantity, setQuantity] = useState(1); // ✅ تخزين الكمية
-
+    const navigate = useNavigate();
     useEffect(() => {
         dispatch(fetchProducts());
     }, [dispatch]);
@@ -36,6 +39,7 @@ function ProductDetails() {
             setQuantity(newQuantity);
         }
     };
+  
 
     const handleAddToCart = async () => {
         setIsLoading(true);
@@ -53,9 +57,14 @@ function ProductDetails() {
 
     return (
         <>
+       
+      <AiOutlineClose className="close-icon" onClick={() => navigate(-1)} />
+  
         <div className="product-details container">
+            
             <div id="carouselExample" className="carousel slide" data-bs-ride="carousel" data-bs-touch="true">
                 <div className="carousel-indicators">
+                    
                     {data.images && data.images.length > 0 && data.images.map((_, index) => (
                         <button key={index} type="button" data-bs-target="#carouselExample" data-bs-slide-to={index} className={index === 0 ? "active" : ""} aria-current={index === 0 ? "true" : "false"} aria-label={`Slide ${index + 1}`}></button>
                     ))}

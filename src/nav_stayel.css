@@ -27,6 +27,12 @@ body, html {
   background-color: #1e1e1e;
   color: white;
 }
+.nav-icon {
+  font-size: 25px;
+  margin-left: 10px;
+  vertical-align: middle;
+  color: #03801c; 
+}
 
 .custom-navbar.light {
   background-color: white;

@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { selectCartCount } from "./cartSlice";
 import LogoImg from "./img/mobileLogo.svg";
 import "./nav_stayel.css";
-
+import { FaHome, FaStore, FaPhoneAlt } from "react-icons/fa";
 const MyNavbar = () => {
   const [darkMode, setDarkMode] = useState(localStorage.getItem("darkMode") === "true");
   const [expanded, setExpanded] = useState(false);
@@ -99,17 +99,19 @@ const MyNavbar = () => {
           </div>
 
           <Navbar.Collapse id="basic-navbar-nav" className="justify-content-center">
-            <Nav className="nav-links d-flex gap-4">
-              <Nav.Link as={Link} to="/" className={`befor ${activeTab === "/" ? "active" : ""}`} onClick={() => { setActiveTab("/"); setExpanded(false); }}>
-                الصفحة الرئيسية
-              </Nav.Link>
-              <Nav.Link as={Link} to="/products" className={`befor ${activeTab === "/products" ? "active" : ""}`} onClick={() => { setActiveTab("/products"); setExpanded(false); }}>
-                المنتجات
-              </Nav.Link>
-              <Nav.Link as={Link} to="/contact" className={`befor ${activeTab === "/contact" ? "active" : ""}`} onClick={() => { setActiveTab("/contact"); setExpanded(false); }}>
-                تواصل معنا
-              </Nav.Link>
-            </Nav>
+          <Nav className="nav-links d-flex gap-4">
+  <Nav.Link as={Link} to="/" className={`befor ${activeTab === "/" ? "active" : ""}`} onClick={() => { setActiveTab("/"); setExpanded(false); }}>
+    <FaHome className="nav-icon" /> الصفحة الرئيسية
+  </Nav.Link>
+
+  <Nav.Link as={Link} to="/products" className={`befor ${activeTab === "/products" ? "active" : ""}`} onClick={() => { setActiveTab("/products"); setExpanded(false); }}>
+    <FaStore className="nav-icon" /> المنتجات
+  </Nav.Link>
+
+  <Nav.Link as={Link} to="/contact" className={`befor ${activeTab === "/contact" ? "active" : ""}`} onClick={() => { setActiveTab("/contact"); setExpanded(false); }}>
+    <FaPhoneAlt className="nav-icon" /> تواصل معنا
+  </Nav.Link>
+</Nav>
 
             <Form className="d-lg-flex search-form" onSubmit={handleSearch} style={{direction:'rtl'}}>
               <Form.Control 
