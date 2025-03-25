@@ -9,15 +9,16 @@ import "./productDetails.css";
 import { addToCart } from "./cartSlice";
 import { Footer } from './home';
 import { AiOutlineClose } from "react-icons/ai";
-// import { Link, useNavigate } from "react-router-dom";
+import MyNavbar from "./navbar";
 
 function ProductDetails() {
     const { id } = useParams();
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);
     const [showMessage, setShowMessage] = useState(false);
-    const [quantity, setQuantity] = useState(1); // ✅ تخزين الكمية
+    const [quantity, setQuantity] = useState(1);
     const navigate = useNavigate();
+
     useEffect(() => {
         dispatch(fetchProducts());
     }, [dispatch]);
@@ -39,15 +40,12 @@ function ProductDetails() {
             setQuantity(newQuantity);
         }
     };
-  
 
     const handleAddToCart = async () => {
         setIsLoading(true);
-
         for (let i = 0; i < quantity; i++) {
             await dispatch(addToCart(data));
         }
-
         setIsLoading(false);
         setTimeout(() => {
             setShowMessage(true);
@@ -57,58 +55,81 @@ function ProductDetails() {
 
     return (
         <>
-       
-      <AiOutlineClose className="close-icon" onClick={() => navigate(-1)} />
-  
-        <div className="product-details container">
-            
-            <div id="carouselExample" className="carousel slide" data-bs-ride="carousel" data-bs-touch="true">
-                <div className="carousel-indicators">
-                    
-                    {data.images && data.images.length > 0 && data.images.map((_, index) => (
-                        <button key={index} type="button" data-bs-target="#carouselExample" data-bs-slide-to={index} className={index === 0 ? "active" : ""} aria-current={index === 0 ? "true" : "false"} aria-label={`Slide ${index + 1}`}></button>
-                    ))}
-                </div>
-                <div className="carousel-inner">
-                    {data.images && data.images.length > 0 ? (
-                        data.images.map((image, index) => (
-                            <div key={index} className={`carousel-item ${index === 0 ? "active" : ""}`}>
-                                <img className="d-block w-100" src={image} alt={`Slide ${index + 1}`} loading="lazy"/>
+            <MyNavbar/>
+            <div className="product-details container" style={{ position: 'relative' }}>
+                {/* زر الإغلاق داخل الكارد */}
+                <AiOutlineClose className='icon-close'
+                    onClick={() => navigate(-1)} 
+                    style={{
+                        position: 'absolute',
+                        top: '15px',
+                        right: '15px',
+                        zIndex: 100,
+                        fontSize: '28px',
+                        color: 'red',
+                        background: 'rgba(255, 255, 255, 0.7)',
+                        padding: '4px',
+                        cursor: 'pointer',
+                        border: '1px solid #ddd'
+                        
+                    }}
+                />
+
+                <div id="carouselExample" className="carousel slide" data-bs-ride="carousel" data-bs-touch="true">
+                    <div className="carousel-indicators">
+                        {data.images && data.images.length > 0 && data.images.map((_, index) => (
+                            <button 
+                                key={index} 
+                                type="button" 
+                                data-bs-target="#carouselExample" 
+                                data-bs-slide-to={index} 
+                                className={index === 0 ? "active" : ""} 
+                                aria-current={index === 0 ? "true" : "false"} 
+                                aria-label={`Slide ${index + 1}`}
+                            ></button>
+                        ))}
+                    </div>
+                    <div className="carousel-inner">
+                        {data.images && data.images.length > 0 ? (
+                            data.images.map((image, index) => (
+                                <div key={index} className={`carousel-item ${index === 0 ? "active" : ""}`}>
+                                    <img className="d-block w-100" src={image} alt={`Slide ${index + 1}`} loading="lazy"/>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="carousel-item active">
+                                <img className="d-block w-100" src={loader} alt="No images available" loading="lazy"/>
                             </div>
-                        ))
-                    ) : (
-                        <div className="carousel-item active">
-                            <img className="d-block w-100" src={loader} alt="No images available" loading="lazy"/>
-                        </div>
-                    )}
+                        )}
+                    </div>
                 </div>
-            </div>
-            <div className="div2flex p-3">
-                <p id="title">النوع : {data.title}</p>
-                {data.brand?.name && <p>شركة : {data.brand.name}</p>}
-                {data.storage && <p>المساحة : {data.storage}</p>}
-                {data.ram && <p>الرام : {data.ram}</p>}
-                {data.description && <p>المواصفات : {data.description}</p>}
-                <p id="Price">السعر : {data.price} جنية</p>
                 
-                <div className="btns row align-items-baseline">
-                    <input
-                        type="number"
-                        min="1"
-                        value={quantity}
-                        onChange={handleQuantityChange}
-                        className="quantity-input col-2 p-3"
-                    />
+                <div className="div2flex p-3">
+                    <p id="title">النوع : {data.title}</p>
+                    {data.brand?.name && <p>شركة : {data.brand.name}</p>}
+                    {data.storage && <p>المساحة : {data.storage}</p>}
+                    {data.ram && <p>الرام : {data.ram}</p>}
+                    {data.description && <p>المواصفات : {data.description}</p>}
+                    <p id="Price">السعر : {data.price} جنية</p>
+                    
+                    <div className="btns row align-items-baseline">
+                        <input
+                            type="number"
+                            min="1"
+                            value={quantity}
+                            onChange={handleQuantityChange}
+                            className="quantity-input col-2 p-3"
+                        />
 
-                    <button id="btn-1" onClick={handleAddToCart} className="btn btn-success col-9">
-                        {isLoading ? "Loading..." : "إضافة إلى عربة التسوق"}
-                    </button>
+                        <button id="btn-1" onClick={handleAddToCart} className="btn btn-success col-9">
+                            {isLoading ? "Loading..." : "إضافة إلى عربة التسوق"}
+                        </button>
 
-                    {showMessage && <div className="cart-message">✔ تم إضافة المنتج إلى العربة بنجاح!</div>}
+                        {showMessage && <div className="cart-message">✔ تم إضافة المنتج إلى العربة بنجاح!</div>}
+                    </div>
                 </div>
             </div>
-        </div>
-        <Footer />
+            <Footer />
         </>
     );
 }

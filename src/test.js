@@ -1,79 +1,174 @@
-import { useState, useEffect } from "react";
-import Container from "react-bootstrap/Container";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { Link } from "react-router-dom";
-import LogoImg from "./img/mobileLogo.png";
-import { useSelector } from "react-redux";
-import { selectCartCount } from "./cartSlice";
-import "./nav_stayel.css";
-// import { useState, useEffect } from "react";
-import './LIGHT&DARK.css';
-function BasicExample() {
-  const [darkMode, setDarkMode] = useState(
-    localStorage.getItem("darkMode") === "true"
-  );
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchProducts } from "./productSlice";
+import { addToCart } from "./cartSlice";
+import { Link, useNavigate } from "react-router-dom";
+import "./home.css";
+import { FaCartPlus } from "react-icons/fa";
 
-  useEffect(() => {
-    document.body.classList.toggle("dark-mode", darkMode);
-    localStorage.setItem("darkMode", darkMode);
-  }, [darkMode]);
-
-  const cartCount = useSelector(selectCartCount);
-
+export function Footer() {
   return (
-    <Navbar expand="lg" className={`custom-navbar ${darkMode ? "dark" : "light"}`}>
-      <Container className="cont" >
-      
-        <img className="imf" data-aos="fade-left" data-aos-duration="1500" src={LogoImg} alt="Logo" />
-       
-        <Navbar.Collapse id="basic-navbar-nav"  className="w-100 d-flex justify-content-center">
-          <div className="nav-link d-flex gap-5"> 
-<Nav.Link className="ms-5 fw-bold befor" as={Link} to="/">الصفحة الرئسية </Nav.Link>
-          <Nav.Link as={Link} className="befor" to="/contact">تواصل معنا</Nav.Link>
-            <Nav.Link as={Link} className="me-5 befor"  to="/products">المنتجات</Nav.Link>
-       
-          </div>
-           
-
-          {/* فورم البحث + زر البحث */}
-          <Form className="d-flex ms-auto search">
-            <Form.Control type="search" placeholder="Search" className="me-2" />
-            <Button variant="outline-success">Search</Button>
-          </Form>
-
-
-        </Navbar.Collapse>
-        <span id="theme_switch">
-      <input
-        type="checkbox"
-        className="checkbox"
-        id="checkbox"
-        hidden
-        checked={darkMode}
-        onChange={() => setDarkMode(!darkMode)}
-      />
-      <label htmlFor="checkbox" className="checkbox-label">
-        <i className="fas fa-moon"></i>
-        <i className="fas fa-sun"></i>
-        <span className="ball"></span>
-      </label>
-    </span>
-          {/* زر تبديل المود */}
-         
-          {/* أيقونة السلة */}
-
-          <Link to="/yourCart" className="position-relative cart-icon ms-3 ">
-            <ShoppingCartIcon className="fs-1" />
-            {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+    <div className="rtl container text-center mt-4">
+      <p>
+        &copy; {"   "}
+        <b>
+          <Link className="Mo"
+            to={"https://www.facebook.com/profile.php?id=100063776365288"}
+            target="_blank"
+          >
+            مستر موبايل
           </Link>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-      </Container>
-    </Navbar>
+        </b>
+        2025.
+      </p>
+      <p>*كل ما هو جديد في عالم الهواتف الذكيه*</p>
+      <div>
+        <p>تم التصميم بواسطه : </p>
+          <div className="GRIDING my-3">
+          <div className="hoverShow">
+          <span className="fw-bold"> عبدالرحمن عبدالسميع </span>
+            <div className="socialMedia m-3">
+              <Link target="_blank">
+                <i className="fa-brands fa-github m-2"></i>
+              </Link>
+              <Link target="_blank">
+                <i className="fa-brands fa-linkedin-in m-2"></i>
+              </Link>
+              <Link target="_blank">
+                <i className="fa-brands fa-whatsapp m-2"></i>
+              </Link>
+              <Link target="_blank">
+                <i className="fa-brands fa-facebook-f m-2"></i>
+              </Link>
+            </div>
+          </div>
+          <br />
+          <div className="hoverShow">
+          <span className="fw-bold"> محمد محمود حامد </span>
+            <div className="socialMedia m-3">
+              <Link to='https://github.com/mohamedmahmoudhamid' target="_blank">
+                <i className="fa-brands fa-github m-2"></i>
+              </Link>
+              <Link to='https://www.linkedin.com/in/mohamed-mahmoud-hamid-2b1b44313?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app' target="_blank">
+                <i className="fa-brands fa-linkedin-in m-2"></i>
+              </Link>
+              <Link to='https://wa.me/201280538625' target="_blank">
+                <i className="fa-brands fa-whatsapp m-2"></i>
+              </Link>
+              <Link to='https://www.facebook.com/profile.php?id=100022375840375&mibextid=ZbWKwL' target="_blank">
+                <i className="fa-brands fa-facebook-f m-2"></i>
+              </Link>
+            </div>
+            </div>
+          <br />
+          <div className="hoverShow">
+          <span className="fw-bold"> محمد عبدالحميد </span>
+            <div className="socialMedia m-3">
+              <Link to='https://github.com/mohamedabdelhameid' target="_blank">
+                <i className="fa-brands fa-github m-2"></i>
+              </Link>
+              <Link to='https://www.linkedin.com/in/mohamed-abdel-hameed-6b36732b8' target="_blank">
+                <i className="fa-brands fa-linkedin-in m-2"></i>
+              </Link>
+              <Link to='https://wa.me/+201120203912' target="_blank">
+                <i className="fa-brands fa-whatsapp m-2"></i>
+              </Link>
+              <Link to='https://www.facebook.com/share/167YmfNBi2/' target="_blank">
+                <i className="fa-brands fa-facebook-f m-2"></i>
+              </Link>
+            </div>
+            </div>
+          </div>
+      </div>
+    </div>
   );
 }
 
-export default BasicExample;
+function Home() {
+  const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [isFetching, setIsFetching] = useState(true);
+
+  useEffect(() => {
+    setIsFetching(true);
+    dispatch(fetchProducts()).then(() => setIsFetching(false));
+  }, [dispatch]);
+
+  const products = useSelector((state) => state.products.items || []);
+  const randomProducts = [...products]
+    .sort(() => 0.5 - Math.random())
+    .slice(0, 10);
+
+  const handleAddToCart = async (product) => {
+    setIsLoading(true);
+    setMessage("جارٍ إضافة المنتج...");
+    await dispatch(addToCart(product));
+    setIsLoading(false);
+    setMessage("✔ تم إضافة المنتج بنجاح! 🎉");
+    setTimeout(() => setMessage(""), 5000);
+  };
+
+  const navigate = useNavigate();
+
+  return (
+    <div className="container randomProduct my-2">
+      <div className="flexable">
+          <h1 className="text-cente text-ran fw-bold mb-2">منتجات مرشحة</h1>
+            <button
+                className="btn btn-primary my-3 p-2"
+                onClick={()=>{navigate("/products")}}
+              >
+                رؤية المزيد من المنتجات
+              </button>
+      </div>
+
+      {isFetching && (
+        <div className="loading-products">⏳ جارٍ تحميل المنتجات...</div>
+      )}
+      {isLoading && <div className="loading-spinner">⏳ جارٍ المعالجة...</div>}
+      {message && <div className="message-box">{message}</div>}
+
+      {!isFetching && (
+        <div className="product-list div-0">
+          {randomProducts.map((product) => (
+            <div key={product._id} className="product-card div-1">
+              <Link to={`/product/${product._id}`}>
+                <img
+                  src={product.imageCover}
+                  width="100%"
+                  alt={product.title || "صورة المنتج"}
+                  className="imgProduct rounded-3"
+                />
+              </Link>
+              {product.brand?.name && (
+                <p className="product-pric text-center fw-800">{product.brand.name}</p>
+              )}
+              {product.title && (
+                <p className="product-title text-center fw-bold">
+                  {product.title}
+                </p>
+              )}
+              {product.price && (
+                <p className="product-price text-center fw-800">{product.price} جنية</p>
+              )}
+
+              <button
+                className="btn btn-success w-100 my-3"
+                onClick={() => handleAddToCart(product)}
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                    <span className="loader"></span>
+                ) : (
+                    <> أضف الى {<FaCartPlus />}</>
+                )}
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    {/* <Footer/> */}
+    </div>
+  );
+}

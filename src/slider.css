@@ -1,4 +1,27 @@
+.slider {
+    margin-top: 60px;
+  }
+  
+  .imgSlider {
+  padding: 10px ;
+    width: 100%;
+    height: auto; 
+    cursor: pointer;
+    max-height: 500px; /* أقصى ارتفاع لتجنب التمدد الزائد في الشاشات الكبيرة */
+    /* object-fit: contain; يضمن عرض الصورة بالكامل بدون قص */
+  }
+  
+  @media (min-width: 992px) {
+    .imgSlider {
+        width: 100%;
+      height: 500px; 
+     margin-top:10px;
+      
 
+      
+    }
+  }
+  
 .loading-spinner {
     position: fixed;
     top: 10px;

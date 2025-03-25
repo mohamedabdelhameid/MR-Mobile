@@ -53,7 +53,7 @@ export function SelectCategory({ selectedCategory }) {
 
   return (
     <>
-      {message && <div className="message-box">{message}</div>}
+      {message && <div className="message-box ">{message}</div>}
       {selectedCategory && (
         <div
           className="mt-4 text-center container"
@@ -118,7 +118,7 @@ function ControlledCarousel({ setSelectedCategory }) {
   };
   const navigate = useNavigate();
   return (
-    <Carousel interval={3000} className="mt-3 slider">
+    <Carousel interval={3000} className="slider">
       <Carousel.Item
         onClick={() => {
           navigate("/#productFilter");

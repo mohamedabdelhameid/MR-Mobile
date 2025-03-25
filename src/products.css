@@ -28,6 +28,7 @@
 }
 .div-0 .imgProduct{
   width: 100%;
+  cursor: pointer;
   border-radius: 30px;
 }
 .div-0 .div-1{
@@ -93,6 +94,8 @@
 
 .product-card {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: rgba(0, 0, 0, 0.1) solid  !important;
+
 }
 .product-card:hover {
   transform: scale(0.99) translateY(-5px);
@@ -105,7 +108,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 20px;
+  margin-top: 80px;
 }
 
 .category-filter {

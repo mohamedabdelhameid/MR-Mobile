@@ -4,7 +4,7 @@ import { fetchProducts } from "./productSlice";
 import { addToCart } from "./cartSlice";
 import { Link, useNavigate } from "react-router-dom";
 import "./home.css";
-import { FaCartPlus } from "react-icons/fa";
+import { FaCartPlus, FaHeart } from "react-icons/fa";
 
 export function Footer() {
   return (
@@ -46,16 +46,16 @@ export function Footer() {
           <div className="hoverShow">
           <span className="fw-bold"> محمد محمود حامد </span>
             <div className="socialMedia m-3">
-              <Link target="_blank">
+              <Link to='https://github.com/mohamedmahmoudhamid' target="_blank">
                 <i className="fa-brands fa-github m-2"></i>
               </Link>
-              <Link target="_blank">
+              <Link to='https://www.linkedin.com/in/mohamed-mahmoud-hamid-2b1b44313?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app' target="_blank">
                 <i className="fa-brands fa-linkedin-in m-2"></i>
               </Link>
-              <Link target="_blank">
+              <Link to='https://wa.me/201280538625' target="_blank">
                 <i className="fa-brands fa-whatsapp m-2"></i>
               </Link>
-              <Link target="_blank">
+              <Link to='https://www.facebook.com/profile.php?id=100022375840375&mibextid=ZbWKwL' target="_blank">
                 <i className="fa-brands fa-facebook-f m-2"></i>
               </Link>
             </div>
@@ -89,10 +89,13 @@ function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [isFetching, setIsFetching] = useState(true);
+  const [favorites, setFavorites] = useState([]);
 
   useEffect(() => {
     setIsFetching(true);
     dispatch(fetchProducts()).then(() => setIsFetching(false));
+    const storedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
+    setFavorites(storedFavorites);
   }, [dispatch]);
 
   const products = useSelector((state) => state.products.items || []);
@@ -109,23 +112,36 @@ function Home() {
     setTimeout(() => setMessage(""), 5000);
   };
 
+  const handleFavorite = (product) => {
+    let updatedFavorites;
+    let isFavorite = favorites.some((fav) => fav._id === product._id);
+
+    if (isFavorite) {
+      updatedFavorites = favorites.filter((fav) => fav._id !== product._id);
+      setMessage("تم إزالة المنتج من المفضلة");
+    } else {
+      updatedFavorites = [...favorites, product];
+      setMessage("✔ تم إضافة المنتج إلى المفضلة بنجاح! 🎉");
+    }
+
+    setFavorites(updatedFavorites);
+    localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+    window.dispatchEvent(new Event("favoritesUpdated"));
+    setTimeout(() => setMessage(""), 5000);
+  };
+
   const navigate = useNavigate();
 
   return (
     <div className="container randomProduct my-2">
       <div className="flexable">
-          <h1 className="text-cente text-ran fw-bold mb-2">منتجات مرشحة</h1>
-            <button
-                className="btn btn-primary my-3 p-2"
-                onClick={()=>{navigate("/products")}}
-              >
-                رؤية المزيد من المنتجات
-              </button>
+        <h1 className="text-cente text-ran fw-bold mb-2">منتجات مرشحة</h1>
+        <button className="btn btn-primary my-3 p-2" onClick={() => navigate("/products")}>
+          رؤية المزيد من المنتجات
+        </button>
       </div>
 
-      {isFetching && (
-        <div className="loading-products">⏳ جارٍ تحميل المنتجات...</div>
-      )}
+      {isFetching && <div className="loading-products">⏳ جارٍ تحميل المنتجات...</div>}
       {isLoading && <div className="loading-spinner">⏳ جارٍ المعالجة...</div>}
       {message && <div className="message-box">{message}</div>}
 
@@ -133,6 +149,34 @@ function Home() {
         <div className="product-list div-0">
           {randomProducts.map((product) => (
             <div key={product._id} className="product-card div-1">
+              <div
+                className="favorite-btn"
+                onClick={() => handleFavorite(product)}
+                style={{
+                  position: "absolute",
+                  top: "10px",
+                  right: "10px",
+                  cursor: "pointer",
+                  fontSize: "24px",
+                  transition: "transform 0.2s ease-in-out",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "50%",
+                  backgroundColor: "white",
+                  boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+                }}
+              >
+                <FaHeart
+                  className="heart-icon"
+                  style={{
+                    color: favorites.some((fav) => fav._id === product._id) ? "red" : "gray",
+                    transition: "color 0.3s ease-in-out",
+                  }}
+                />
+              </div>
               <Link to={`/product/${product._id}`}>
                 <img
                   src={product.imageCover}
@@ -141,34 +185,16 @@ function Home() {
                   className="imgProduct rounded-3"
                 />
               </Link>
-              {product.brand?.name && (
-                <p className="product-pric text-center fw-800">{product.brand.name}</p>
-              )}
-              {product.title && (
-                <p className="product-title text-center fw-bold">
-                  {product.title}
-                </p>
-              )}
-              {product.price && (
-                <p className="product-price text-center fw-800">{product.price} جنية</p>
-              )}
-
-              <button
-                className="btn btn-success w-100 my-3"
-                onClick={() => handleAddToCart(product)}
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                    <span className="loader"></span>
-                ) : (
-                    <> أضف الى {<FaCartPlus />}</>
-                )}
+              {product.brand?.name && <p className="product-pric text-center fw-800">{product.brand.name}</p>}
+              {product.title && <p className="product-title text-center fw-bold">{product.title}</p>}
+              {product.price && <p className="product-price text-center fw-800">{product.price} جنية</p>}
+              <button className="btn btn-success w-100 my-3" onClick={() => handleAddToCart(product)} disabled={isLoading}>
+                {isLoading ? <span className="loader"></span> : <> أضف الى {<FaCartPlus />} </>}
               </button>
             </div>
           ))}
         </div>
       )}
-    {/* <Footer/> */}
     </div>
   );
 }

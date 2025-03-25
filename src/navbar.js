@@ -6,38 +6,37 @@ import { useSelector } from "react-redux";
 import { selectCartCount } from "./cartSlice";
 import LogoImg from "./img/mobileLogo.svg";
 import "./nav_stayel.css";
-import { FaHome, FaStore, FaPhoneAlt } from "react-icons/fa";
+import { FaHome, FaStore, FaPhoneAlt, FaSignInAlt, FaHeart } from "react-icons/fa";
+
 const MyNavbar = () => {
   const [darkMode, setDarkMode] = useState(localStorage.getItem("darkMode") === "true");
   const [expanded, setExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState("/");
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [favoriteCount, setFavoriteCount] = useState(0);
 
   const searchRef = useRef(null);
   const navigate = useNavigate();
   const cartCount = useSelector(selectCartCount);
 
+useEffect(() => {
+    const updateFavoriteCount = () => {
+        const storedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
+        setFavoriteCount(storedFavorites.length);
+    };
+
+    // ✅ تحديث العدد عند تحميل الصفحة وأي تحديث في المفضلات
+    updateFavoriteCount();
+    window.addEventListener("favoritesUpdated", updateFavoriteCount);
+
+    return () => window.removeEventListener("favoritesUpdated", updateFavoriteCount);
+}, []);
+
   useEffect(() => {
     document.body.classList.toggle("dark-mode", darkMode);
     localStorage.setItem("darkMode", darkMode);
   }, [darkMode]);
-
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setSearchOpen(false);
-      }
-    }
-
-    if (searchOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [searchOpen]);
 
   const handleSearch = async (event) => {
     event.preventDefault();
@@ -47,17 +46,11 @@ const MyNavbar = () => {
       const response = await fetch(`https://ecommerce.routemisr.com/api/v1/products`);
       const data = await response.json();
 
-      console.log("📌 جميع المنتجات:", data.data); // ✅ التأكد من استلام البيانات
-
       if (data && data.data) {
         const normalizedSearchTerm = searchTerm.trim().toLowerCase();
-
         const filteredResults = data.data.filter(product =>
-          product.slug &&
-          product.slug.toLowerCase().includes(normalizedSearchTerm) // ✅ البحث داخل slug فقط
+          product.slug?.toLowerCase().includes(normalizedSearchTerm)
         );
-
-        console.log("🔍 نتائج البحث:", filteredResults); // ✅ التأكد من صحة البحث
 
         if (filteredResults.length > 0) {
           navigate(`/products?search=${searchTerm}`, { state: { results: filteredResults } });
@@ -86,6 +79,13 @@ const MyNavbar = () => {
               </label>
             </span>
 
+            {/* ✅ مفضلات */}
+            <Link to="/fouvrit" className="position-relative cart-icon me-3">
+              <FaHeart className="fs-1 text-danger" />
+              {favoriteCount > 0 && <span className="cart-badge">{favoriteCount}</span>}
+            </Link>
+
+            {/* ✅ السلة */}
             <Link to="/yourCart" className="position-relative cart-icon me-3">
               <ShoppingCartIcon className="fs-1" />
               {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
@@ -99,19 +99,27 @@ const MyNavbar = () => {
           </div>
 
           <Navbar.Collapse id="basic-navbar-nav" className="justify-content-center">
-          <Nav className="nav-links d-flex gap-4">
-  <Nav.Link as={Link} to="/" className={`befor ${activeTab === "/" ? "active" : ""}`} onClick={() => { setActiveTab("/"); setExpanded(false); }}>
-    <FaHome className="nav-icon" /> الصفحة الرئيسية
-  </Nav.Link>
+            <Nav className="nav-links d-flex gap-4">
+              <Nav.Link as={Link} to="/" className={`befor ${activeTab === "/" ? "active" : ""}`} 
+                onClick={() => { setActiveTab("/"); setExpanded(false); }}>
+                <FaHome className="nav-icon" /> الصفحة الرئيسية
+              </Nav.Link>
 
-  <Nav.Link as={Link} to="/products" className={`befor ${activeTab === "/products" ? "active" : ""}`} onClick={() => { setActiveTab("/products"); setExpanded(false); }}>
-    <FaStore className="nav-icon" /> المنتجات
-  </Nav.Link>
+              <Nav.Link as={Link} to="/products" className={`befor ${activeTab === "/products" ? "active" : ""}`} 
+                onClick={() => { setActiveTab("/products"); setExpanded(false); }}>
+                <FaStore className="nav-icon" /> المنتجات
+              </Nav.Link>
 
-  <Nav.Link as={Link} to="/contact" className={`befor ${activeTab === "/contact" ? "active" : ""}`} onClick={() => { setActiveTab("/contact"); setExpanded(false); }}>
-    <FaPhoneAlt className="nav-icon" /> تواصل معنا
-  </Nav.Link>
-</Nav>
+              <Nav.Link as={Link} to="/contact" className={`befor ${activeTab === "/contact" ? "active" : ""}`} 
+                onClick={() => { setActiveTab("/contact"); setExpanded(false); }}>
+                <FaPhoneAlt className="nav-icon" /> تواصل معنا
+              </Nav.Link>
+
+              <Nav.Link as={Link} to="/singeup" className={`sing ${activeTab === "/signup" ? "active" : ""}`} 
+                onClick={() => { setActiveTab("/signup"); setExpanded(false); }}>
+                <FaSignInAlt className="nav-icon singg" /> تسجيل الدخول
+              </Nav.Link>
+            </Nav>
 
             <Form className="d-lg-flex search-form" onSubmit={handleSearch} style={{direction:'rtl'}}>
               <Form.Control 

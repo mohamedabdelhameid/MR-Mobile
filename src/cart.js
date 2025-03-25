@@ -11,8 +11,10 @@ import "./cart.css";
 import Swal from "sweetalert2";
 import { Footer } from "./home";
 import { useNavigate } from "react-router-dom";
+import MyNavbar from "./navbar";
 
 function Cart() {
+  
   const dispatch = useDispatch();
   const cart = useSelector(selectCartItems);
   const [messages, setMessages] = useState([]); 
@@ -101,10 +103,14 @@ function Cart() {
       }
     });
   };
+  
 
   return (
-    <div className="container" style={{ direction: "rtl" }}>
-      <div className="messages-container">
+
+    
+    <div className="container" >
+      <MyNavbar/>
+      <div className="messages-container" >
         {messages.map((msg) => (
           <div key={msg.id} className={`cart-message ${msg.type === "error" ? "delete-message" : ""}`}>
             {msg.isLoading ? (
@@ -117,10 +123,9 @@ function Cart() {
           </div>
         ))}
       </div>
-
       <h1 className="my-3"> محتويات سلة</h1>
       {isCartEmpty ? (
-        <h1 className="text-danger container" style={{minHeight:'60vh'}}>السلة فارغة</h1>
+        <h1 className="text-danger container" style={{minHeight:'60vh',direction: "rtl"}}>السلة فارغة</h1>
       ) : (
         <ol className="container row">
           {cart.map((item) => (
@@ -145,7 +150,7 @@ function Cart() {
         </ol>
       )}
       {!isCartEmpty && ( // ✅ إخفاء الأزرار عند فراغ السلة
-        <div className="Div-buttons-buy-delete">
+        <div className="Div-buttons-buy-delete"style={{ direction: "rtl" }} >
           <h3>السعر الكلي: {totalPrice} جنية</h3>
           <button className="btn btn-success mx-1" onClick={()=>{
             navigate('/PaymentForm', { state: { totalPrice } });

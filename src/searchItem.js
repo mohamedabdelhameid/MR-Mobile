@@ -40,7 +40,7 @@ export default function SearchResult() {
     };
 
     return (
-        <div className="container my-4" style={{ direction: "rtl" }}>
+        <div className="container my-4 " style={{ direction: "rtl" }}>
             {showMessage && <div className="cart-message">✔ تم الشراء بنجاح!</div>}
 
             <h2 className="fw-bold">نتائج البحث</h2>

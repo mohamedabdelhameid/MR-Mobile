@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import { clearFinallyCart } from "./cartSlice"; 
 import './cartpay.css';
 import { Footer } from "./home";
+import MyNavbar from "./navbar";
 
 export default function PaymentForm() {
     const location = useLocation();
@@ -48,6 +49,7 @@ export default function PaymentForm() {
 
     return (
         <>
+        <MyNavbar/>
             <div className="payment-container">
                 <h2 className="fw-bold text-center">تأكيد عملية الشراء</h2>
 

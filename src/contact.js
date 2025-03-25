@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {FaMapMarkerAlt, FaWhatsapp } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Footer } from "./home";
+import MyNavbar from "./navbar";
 
 const Contact = () => {
   const [message, setMessage] = useState(""); // حالة لحفظ الرسالة
@@ -20,7 +21,9 @@ const Contact = () => {
 
   return (
     <>
-    <div style={{ marginTop: "50px", padding: "10px" ,direction:"rtl",maxWidth:'800px' }} className="container ">
+       <MyNavbar/>
+
+    <div style={{ marginTop: "60px", padding: "10px" ,direction:"rtl",maxWidth:'800px' }} className="container ">
       <h2 className="mb-4">تواصل معنا</h2>
       {message && <div className="alert alert-success">{message}</div>}
       
