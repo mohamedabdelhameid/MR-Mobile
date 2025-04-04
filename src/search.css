@@ -1,6 +1,6 @@
 .div-main{
   display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(140px,200px)) !important;
+  grid-template-columns: repeat(auto-fit,minmax(140px,250px)) !important;
   gap: 20px;
   direction: rtl;
   justify-content: center;

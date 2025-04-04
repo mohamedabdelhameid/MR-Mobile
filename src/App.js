@@ -1,21 +1,20 @@
 import React, { useState } from "react";
 import Home, { Footer } from './home';
-import Slider, { SelectCategory } from "./Slider";
+import Slider from "./Slider";
 import AboutUs from './aboutus';
 import MyNavbar from "./navbar";
-
+import { ScrollToHashElement } from "./Slider";
 
 function App() {
-    const [selectedCategory, setSelectedCategory] = useState(null);
 
     return (
         <>
-            <MyNavbar />
-            <Slider setSelectedCategory={setSelectedCategory}/>
+            <MyNavbar/>
+            <Slider/>
             <Home />
-            <SelectCategory selectedCategory={selectedCategory}/>
             <AboutUs/>
             <Footer/>
+            <ScrollToHashElement />
         </>
     );
 }

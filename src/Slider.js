@@ -13,124 +13,35 @@ import "./home.css";
 import { fetchProducts } from "./productSlice";
 import "./slider.css";
 
-export function SelectCategory({ selectedCategory }) {
-  const dispatch = useDispatch();
-  const [message, setMessage] = useState("");
-  const [isFetching, setIsFetching] = useState(true);
-  const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [currentProduct, setCurrentProduct] = useState(null);
+import { useLocation } from "react-router-dom";
+
+export const ScrollToHashElement = () => {
+  const location = useLocation();
 
   useEffect(() => {
-    fetch("https://ecommerce.routemisr.com/api/v1/products")
-      .then((res) => res.json())
-      .then((json) => setProducts(json.data || []))
-      .catch((error) => console.error("Error fetching products:", error));
-  }, []);
-
-  useEffect(() => {
-    if (selectedCategory) {
-      setFilteredProducts(
-        products.filter((p) => p.category?.name === selectedCategory)
-      );
+    if (location.hash) {
+      setTimeout(() => {
+        const element = document.querySelector(location.hash);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 100); // تأخير بسيط للتأكد من تحميل العنصر
     }
-  }, [selectedCategory, products]);
+  }, [location]);
 
-  useEffect(() => {
-    setIsFetching(true);
-    dispatch(fetchProducts()).then(() => setIsFetching(false));
-  }, [dispatch]);
+  return null;
+};
 
-  const handleAddToCart = async (product) => {
-    setIsLoading(true);
-    setMessage("جارٍ إضافة المنتج...");
-    await dispatch(addToCart(product));
-    setIsLoading(false);
-    setMessage("✔ تم إضافة المنتج بنجاح! 🎉");
-    setTimeout(() => setMessage(""), 5000);
-  };
 
-  return (
-    <>
-      {message && <div className="message-box">{message}</div>}
-      {selectedCategory && (
-        <div
-          className="mt-4 text-center container"
-          style={{ direction: "rtl" }}
-          id="productFilter"
-        >
-          <h1 className="fw-bold mb-2">منتجات {selectedCategory}</h1>
-          <div className="Items-list div-0">
-            {filteredProducts.length > 0 ? (
-              filteredProducts.map((product) => (
-                <div key={product._id} className="product-card div-1">
-                  <Link to={`/product/${product._id}`}>
-                    <img
-                      src={product.imageCover}
-                      width="100%"
-                      alt={product.title || "صورة المنتج"}
-                      className="imgProduct rounded-3"
-                    />
-                  </Link>
-                  {product.brand?.name && (
-                    <p className="product-pric text-center fw-800">
-                      {product.brand.name}
-                    </p>
-                  )}
-                  {product.title && (
-                    <p className="product-title text-center fw-bold">
-                      {product.title}
-                    </p>
-                  )}
-                  {product.price && (
-                    <p className="product-price text-center fw-800">
-                      {product.price} جنية
-                    </p>
-                  )}
-                  <button
-                    className="btn btn-success w-100 my-3"
-                    onClick={() => handleAddToCart(product)}
-                    disabled={isLoading && currentProduct === product._id}
-                  >
-                    {isLoading && currentProduct === product._id ? (
-                      <span className="loader"></span>
-                    ) : (
-                      <> أضف الى {<FaCartPlus />} </>
-                    )}
-                  </button>
-                </div>
-              ))
-            ) : (
-              <p>لا توجد منتجات في هذه الفئة</p>
-            )}
-          </div>
-        </div>
-      )}
-    </>
-  );
-}
-
-function ControlledCarousel({ setSelectedCategory }) {
-  const handleBannerClick = (index) => {
-    const categories = ["Women's Fashion", "Men's Fashion", "Electronics"];
-    setSelectedCategory(categories[index]);
-  };
+function ControlledCarousel() {
   const navigate = useNavigate();
   return (
     <Carousel interval={3000} className="slider">
       <Carousel.Item
         onClick={() => {
-          navigate("/#productFilter");
-          setTimeout(() => {
-            const element = document.getElementById("productFilter");
-            if (element) {
-              element.scrollIntoView({ behavior: "smooth" });
-            }
-          }, 100);
-
-          handleBannerClick(0);
+          window.location.href = "/Products#accessory";
         }}
+        
       >
         <img
           src={banner1}
@@ -141,15 +52,7 @@ function ControlledCarousel({ setSelectedCategory }) {
       </Carousel.Item>
       <Carousel.Item
         onClick={() => {
-          navigate("/#productFilter");
-          setTimeout(() => {
-            const element = document.getElementById("productFilter");
-            if (element) {
-              element.scrollIntoView({ behavior: "smooth" });
-            }
-          }, 100);
-
-          handleBannerClick(1);
+          navigate("/Products");
         }}
       >
         <img
@@ -161,16 +64,9 @@ function ControlledCarousel({ setSelectedCategory }) {
       </Carousel.Item>
       <Carousel.Item
         onClick={() => {
-          navigate("/#productFilter");
-          setTimeout(() => {
-            const element = document.getElementById("productFilter");
-            if (element) {
-              element.scrollIntoView({ behavior: "smooth" });
-            }
-          }, 100);
-
-          handleBannerClick(2);
+          window.location.href = "/Products#accessory";
         }}
+      
       >
         <img
           src={banner2}

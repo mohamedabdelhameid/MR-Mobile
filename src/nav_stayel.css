@@ -15,12 +15,18 @@ body, html {
 .custom-navbar {
   width: 100%;
   padding: 10px 0;
-  position: fixed;
+ position: fixed !important;
   top: 0;
   left: 0;
   z-index: 1000;
   background: inherit;
   transition: background 0.3s;
+ 
+   
+   
+
+ 
+  
 }
 
 .custom-navbar.dark {
@@ -32,6 +38,13 @@ body, html {
   margin-left: 10px;
   vertical-align: middle;
   color: #03801c; 
+  margin: 0; /* يمنع المسافات الزائدة */
+  display: inline-flex; /* يحافظ على المحاذاة الصحيحة */
+  align-items: center;
+  transition: .3s;
+}
+.befor:hover .nav-icon{
+  color: #383838;
 }
 
 .custom-navbar.light {
@@ -51,15 +64,16 @@ body, html {
   width: 150px;
   height: 50px;
 }
-@media (max-width: 374px) {
+@media (max-width: 375px) {
   .logo {
-    width: 110px;
+    width: 50px;
     height: 50px;
   }
 }
 
 .nav-links {
   display: flex;
+  align-items: center;
   justify-content: center;
   gap: 20px;
 }
@@ -88,6 +102,28 @@ body, html {
 
 .befor.active {
   color: green;
+}
+.sing{
+  border-radius: 10px;
+  
+}
+
+.sing:hover {
+  transform: scalex(1.1);
+  background-color: #2b903f88 !important;
+  transition: .5s;
+
+
+}
+.sing:hover .singg{
+color: #383838 !important;
+}
+
+@media (min-width: 1201px) {
+ .sing{
+position: relative;
+left: 30px;
+ }
 }
 
 .search-form {

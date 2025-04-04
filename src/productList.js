@@ -27,7 +27,7 @@ function ProductList() {
   } else {
     content = datas.map((data, index) => {
       console.log(`Data at index ${index}:`, data);
-      return data ? <ProductCard key={data._id} data={data} /> : null;
+      return data ? <ProductCard key={data.id} data={data} /> : null;
     });
   }
 
