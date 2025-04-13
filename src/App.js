@@ -1,19 +1,33 @@
-import React, { useState } from "react";
-import Home, { Footer } from './home';
-import Slider from "./Slider";
-import AboutUs from './aboutus';
-import MyNavbar from "./navbar";
-import { ScrollToHashElement } from "./Slider";
+import React, { useState, useEffect } from "react";
+import Home, { Footer } from './landing/home';
+import Slider from "./landing/Slider";
+import AboutUs from './landing/aboutus';
+import MyNavbar from "./landing/navbar";
+import { ScrollToHashElement } from "./landing/Slider";
+import SplashScreen from "./components/SplashScreen";
 
 function App() {
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setLoading(false);
+        }, 2500); // وقت عرض الاسبلاش (2.5 ثانية)
+
+        return () => clearTimeout(timer);
+    }, []);
+
+    if (loading) {
+        return <SplashScreen />;
+    }
 
     return (
         <>
-            <MyNavbar/>
-            <Slider/>
+            <MyNavbar />
+            <Slider />
             <Home />
-            <AboutUs/>
-            <Footer/>
+            <AboutUs />
+            <Footer />
             <ScrollToHashElement />
         </>
     );

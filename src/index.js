@@ -4,34 +4,30 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Routes, Route } from "react-router";
 import { Provider } from 'react-redux';
-import store from './store';
-import Ffetch from './products';
-import ProductDetails from './productDetails';
-import Cart from './cart';
+import store from './products/store';
+import Ffetch from './products/products';
+import ProductDetails from './products/productDetails';
+import Cart from './user/cart/cart';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
-import Contact from "./contact";
-import SearchComponent from './searchItem';
-import PaymentForm from './cartPay';
-import NotFound from './notFound';
-import Singup from './singeup'
-import Forgot from './forgot-password'
-import Login from './login'
-import VerifyCode from './VerifyCode';
-import Favorites from './fouvrit';
-import Accountinformation from './account';
-import AccessoryDetails from "./accessoryDetails";
+import Contact from "./user/contact/contact";
+import SearchComponent from './products/search/searchItem';
+import NotFound from './notFound/notFound';
+import Singup from './user/account/singeup'
+import Forgot from './user/account/forgot-password'
+import Login from './user/account/login'
+import VerifyCode from './user/account/VerifyCode';
+import Favorites from './user/favourite/fouvrit';
+import Accountinformation from './user/account/account';
+import AccessoryDetails from "./products/accessoryDetails";
+import SearchResult from './products/search/searchItem';
+import * as serviceWorkerRegistration from './serviceWorker';
 
-
-import MyNavbar from './navbar';
-import SearchResult from './searchItem';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
-      {/* <MyNavbar/> */}
-
         <Routes>
 
           <Route path="/" element={<App />} />
@@ -42,7 +38,6 @@ root.render(
           <Route path="/mobiles/:id" element={<ProductDetails />} />
           <Route path="/accessories/:id" element={<AccessoryDetails />} />
           <Route path="/searchresult" element={<SearchComponent />} />
-          <Route path="/PaymentForm" element={<PaymentForm />} />
           <Route path="/singeup" element={<Singup />} />
           <Route path="/forgot-password" element={< Forgot/>} />
           <Route path="/login" element={< Login/>} />
@@ -56,4 +51,5 @@ root.render(
   </React.StrictMode>
 );
 
+serviceWorkerRegistration.register();
 reportWebVitals();

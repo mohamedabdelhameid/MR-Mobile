@@ -1,0 +1,10 @@
+
+.notFound {
+  animation: changeBackground 0.3s linear infinite alternate-reverse;
+}
+
+@keyframes changeBackground {
+  to{
+    background-color: red;
+  }
+}
