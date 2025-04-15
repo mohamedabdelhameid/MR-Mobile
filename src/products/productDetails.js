@@ -26,11 +26,11 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import Swal from "sweetalert2";
 
 const IMAGE_COVER_API = "http://localhost:8000/api/mobiles";
 const ADD_TO_USER_CART = "http://localhost:8000/api/cart-items";
 const BRAND_API = `http://localhost:8000/api/brands`;
-
 
 function ProductDetails() {
   const { id } = useParams();
@@ -52,6 +52,24 @@ function ProductDetails() {
 
   const products = useSelector((state) => state.products.items || []);
   const data = products.find((p) => p.id.toString() === id) || null;
+
+  const handleQuantityChange = (e) => {
+    const newQuantity = parseInt(e.target.value, 10);
+
+    if (isNaN(newQuantity)) return;
+
+    // التحقق من أن الكمية بين 1 والمخزون المتاح
+    if (newQuantity >= 1 && newQuantity <= data.stock_quantity) {
+      setQuantity(newQuantity);
+    } else if (newQuantity > data.stock_quantity) {
+      setQuantity(data.stock_quantity);
+      Swal.fire(
+        "تنبيه",
+        `الحد الأقصى للكمية المتاحة هو ${data.stock_quantity}`,
+        "info"
+      );
+    }
+  };
 
   useEffect(() => {
     if (products.length === 0) {
@@ -93,8 +111,6 @@ function ProductDetails() {
       }
     };
 
-    
-
     const fetchColors = async () => {
       try {
         const response = await fetch(COLOR_API);
@@ -124,16 +140,18 @@ function ProductDetails() {
     }
   }, [data, imageCover, selectedColor]);
 
-  const handleQuantityChange = (e) => {
-    const newQuantity = parseInt(e.target.value, 10);
-    if (!isNaN(newQuantity) && newQuantity > 0 && newQuantity <= 5) {
-      setQuantity(newQuantity);
-    }
-  };
-
   const handleAddToCart = async () => {
     const token = localStorage.getItem("user_token");
     const userId = localStorage.getItem("user_id");
+
+    if (quantity > data.stock_quantity) {
+      Swal.fire(
+        "خطأ",
+        `الكمية المطلوبة (${quantity}) تتجاوز المخزون المتاح (${data.stock_quantity})`,
+        "error"
+      );
+      return;
+    }
 
     if (!token || !userId) {
       setMessageText("❌ يجب تسجيل الدخول أولاً!");
@@ -357,11 +375,12 @@ function ProductDetails() {
 
                   <Grid container spacing={2}>
                     {/* {brands.name && ( */}
-                      <Grid item xs={6}>
-                        <Typography variant="subtitle1">
-                          <strong>الشركة:</strong> {brands[data.brand_id]?.name || "غير معروف"}
-                        </Typography>
-                      </Grid>
+                    <Grid item xs={6}>
+                      <Typography variant="subtitle1">
+                        <strong>الشركة:</strong>{" "}
+                        {brands[data.brand_id]?.name || "غير معروف"}
+                      </Typography>
+                    </Grid>
                     {/* )} */}
                     {data.storage && (
                       <Grid item xs={6}>
@@ -538,9 +557,10 @@ function ProductDetails() {
                       onChange={handleQuantityChange}
                       inputProps={{
                         min: 1,
+                        max: data.stock_quantity, // الحد الأقصى حسب المخزون
                         style: {
                           textAlign: "center",
-                          color: "green", // لون النص أخضر
+                          color: "green",
                         },
                       }}
                       sx={{
@@ -561,11 +581,13 @@ function ProductDetails() {
                         },
                       }}
                     />
-                    <Button
+                    {/* <Button
                       variant="contained"
                       color="primary"
                       onClick={handleAddToCart}
-                      disabled={isLoading}
+                      disabled={
+                        isLoading || (colors.length > 0 && !selectedColor)
+                      }
                       sx={{ flexGrow: 1 }}
                       startIcon={
                         isLoading ? (
@@ -574,6 +596,29 @@ function ProductDetails() {
                       }
                     >
                       {isLoading ? "جاري الإضافة..." : "إضافة إلى عربة التسوق"}
+                    </Button> */}
+
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleAddToCart}
+                      disabled={
+                        isLoading ||
+                        (colors.length > 0 && !selectedColor) ||
+                        data.stock_quantity <= 0 // تعطيل الزر إذا لم يكن هناك مخزون
+                      }
+                      sx={{ flexGrow: 1 }}
+                      startIcon={
+                        isLoading ? (
+                          <CircularProgress size={20} color="inherit" />
+                        ) : null
+                      }
+                    >
+                      {data.stock_quantity <= 0
+                        ? "غير متوفر"
+                        : isLoading
+                        ? "جاري الإضافة..."
+                        : "إضافة إلى عربة التسوق"}
                     </Button>
                   </Box>
                 </CardContent>

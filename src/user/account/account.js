@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import styles from "./AccountInformation.module.css"; // ✅ الآن هو CSS Module
 import { useNavigate } from "react-router-dom"; // لاستخدام التوجيه بعد تسجيل الخروج
 import MyNavbar from "../../landing/navbar";
+import UserOrders from "../orders/orders";
+import { Footer } from "../../landing/home";
 
 function AccountInformation() {
   const [account, setAccount] = useState(null);
@@ -130,6 +132,10 @@ function AccountInformation() {
           </button>
         </div>
       </div>
+        <div style={{direction:'rtl'}}>
+          <UserOrders />
+        </div>
+        <Footer />
     </>
   );
 }

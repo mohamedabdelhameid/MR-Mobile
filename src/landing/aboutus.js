@@ -70,7 +70,7 @@ const AboutUs = () => {
               )
             }
           >
-            <i className="fa-solid fa-map-marker-alt me-2 text-secondary"></i>{" "}
+            <i className="fa-solid fa-map-marker-alt"></i>{" "}
             شارع 15, سوهاج
           </p>
 
@@ -83,7 +83,7 @@ const AboutUs = () => {
               )
             }
           >
-            <i className="fa-solid fa-map-marker-alt me-2 text-secondary"></i>{" "}
+            <i className="fa-solid fa-map-marker-alt"></i>{" "}
             شارع أحمد بدوي, المراغة
           </p>
 
@@ -96,7 +96,7 @@ const AboutUs = () => {
               )
             }
           >
-            <i className="fa-solid fa-map-marker-alt me-2 text-secondary"></i>{" "}
+            <i className="fa-solid fa-map-marker-alt"></i>{" "}
             شارع عبدالمنعم رياض, المراغة
           </p>
         </Col>

@@ -24,6 +24,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import Swal from "sweetalert2";
 
 const IMAGE_COVER_API = "http://localhost:8000/api/accessories";
 const ADD_TO_USER_CART = "http://localhost:8000/api/cart-items";
@@ -145,12 +146,32 @@ function AccessoryDetails() {
 
   const handleQuantityChange = (e) => {
     const newQuantity = parseInt(e.target.value, 10);
-    if (!isNaN(newQuantity) && newQuantity > 0 && newQuantity <= 5) {
+
+    if (isNaN(newQuantity)) return;
+
+    // التحقق من أن الكمية بين 1 والمخزون المتاح
+    if (newQuantity >= 1 && newQuantity <= mergedData.stock_quantity) {
       setQuantity(newQuantity);
+    } else if (newQuantity > mergedData.stock_quantity) {
+      setQuantity(mergedData.stock_quantity);
+      Swal.fire(
+        "تنبيه",
+        `الحد الأقصى للكمية المتاحة هو ${mergedData.stock_quantity}`,
+        "info"
+      );
     }
   };
 
   const handleAddToCart = async () => {
+    if (quantity > mergedData.stock_quantity) {
+      Swal.fire(
+        "خطأ",
+        `الكمية المطلوبة (${quantity}) تتجاوز المخزون المتاح (${mergedData.stock_quantity})`,
+        "error"
+      );
+      return;
+    }
+
     const token = localStorage.getItem("user_token");
 
     if (!token) {
@@ -462,7 +483,7 @@ function AccessoryDetails() {
                       justifyContent: "flex-end",
                     }}
                   >
-                    <TextField
+                    {/* <TextField
                       type="number"
                       size="small"
                       label="الكمية"
@@ -492,12 +513,51 @@ function AccessoryDetails() {
                           color: "darkgreen",
                         },
                       }}
+                    /> */}
+
+                    <TextField
+                      type="number"
+                      size="small"
+                      label="الكمية"
+                      value={quantity}
+                      onChange={handleQuantityChange}
+                      inputProps={{
+                        min: 1,
+                        max: mergedData.stock_quantity, // الحد الأقصى حسب المخزون
+                        style: {
+                          textAlign: "center",
+                          color: "green",
+                        },
+                      }}
+                      sx={{
+                        width: 100,
+                        "& .MuiOutlinedInput-root": {
+                          "& fieldset": {
+                            borderColor: "green",
+                          },
+                          "&:hover fieldset": {
+                            borderColor: "darkgreen",
+                          },
+                        },
+                        "& .MuiInputLabel-root": {
+                          color: "green",
+                        },
+                        "& .Mui-focused": {
+                          color: "darkgreen",
+                        },
+                      }}
                     />
-                    <Button
+
+                    {/* <Button
                       variant="contained"
                       color="primary"
                       onClick={handleAddToCart}
-                      disabled={isLoading}
+                      disabled={
+                        isLoading ||
+                        (mergedData.colors &&
+                          mergedData.colors.length > 0 &&
+                          !selectedColor)
+                      }
                       sx={{ flexGrow: 1 }}
                       startIcon={
                         isLoading ? (
@@ -506,6 +566,30 @@ function AccessoryDetails() {
                       }
                     >
                       {isLoading ? "جاري الإضافة..." : "إضافة إلى عربة التسوق"}
+                    </Button> */}
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleAddToCart}
+                      disabled={
+                        isLoading ||
+                        (mergedData.colors &&
+                          mergedData.colors.length > 0 &&
+                          !selectedColor) ||
+                        mergedData.stock_quantity <= 0 // تعطيل الزر إذا لم يكن هناك مخزون
+                      }
+                      sx={{ flexGrow: 1 }}
+                      startIcon={
+                        isLoading ? (
+                          <CircularProgress size={20} color="inherit" />
+                        ) : null
+                      }
+                    >
+                      {mergedData.stock_quantity <= 0
+                        ? "غير متوفر"
+                        : isLoading
+                        ? "جاري الإضافة..."
+                        : "إضافة إلى عربة التسوق"}
                     </Button>
                   </Box>
                 </CardContent>

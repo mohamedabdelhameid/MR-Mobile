@@ -106,6 +106,7 @@ function Cart() {
           brandName: "غير معروف",
           price: item.price,
           specs: [],
+          stock_quantity: 0,
         };
 
       const brand = brands.find((b) => b.id === mobile.brand_id);
@@ -135,6 +136,7 @@ function Cart() {
         price: mobile.final_price || mobile.price, // استخدم final_price إذا كان موجوداً
         specs,
         color,
+        stock_quantity: mobile.stock_quantity,
       };
     } else if (item.product_type === "accessory") {
       const accessory = accessories.find((a) => a.id === item.product_id);
@@ -145,6 +147,7 @@ function Cart() {
           brandName: "غير معروف",
           price: item.price,
           specs: [],
+          stock_quantity: 0,
         };
 
       const brand = brands.find((b) => b.id === accessory.brand_id);
@@ -164,6 +167,7 @@ function Cart() {
         price: accessory.price,
         specs,
         color,
+        stock_quantity: accessory.stock_quantity,
       };
     }
 
@@ -173,7 +177,9 @@ function Cart() {
       brandName: "غير معروف",
       price: item.price,
       specs: [],
+      stock_quantity: 0,
     };
+    // const { name, image, brandName, specs, stock_quantity } = getProductInfo(item);
   };
 
   const updateCartItemQuantity = async (cartItemId, newQuantity) => {
@@ -270,31 +276,6 @@ function Cart() {
     }
   };
 
-  // const clearCartFromAPI = async () => {
-  //   const userToken = localStorage.getItem("user_token");
-  //   if (!userToken) {
-  //     Swal.fire("خطأ", "يجب تسجيل الدخول أولاً", "error");
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await fetch("http://localhost:8000/api/cart", {
-  //       method: "DELETE",
-  //       headers: {
-  //         Authorization: `Bearer ${userToken}`,
-  //       },
-  //     });
-
-  //     if (!response.ok) throw new Error("فشل في إفراغ السلة");
-
-  //     dispatch(clearCart());
-
-  //     Swal.fire("نجاح", "تم حذف جميع المنتجات بنجاح!", "success");
-  //   } catch (error) {
-  //     Swal.fire("خطأ", "حدث خطأ أثناء إفراغ السلة!", "error");
-  //   }
-  // };
-
   const clearCartFromAPI = async () => {
     const userToken = localStorage.getItem("user_token");
     if (!userToken) {
@@ -319,7 +300,7 @@ function Cart() {
     } catch (error) {
       Swal.fire("خطأ", "حدث خطأ أثناء إفراغ السلة!", "error");
     } finally {
-      setIsClearingCart(false); // إيقاف التحميل
+      setIsClearingCart(false);
     }
   };
 
@@ -357,48 +338,6 @@ function Cart() {
         <Footer />
       </>
     );
-
-  // const handleCheckout = async () => {
-  //   if (!cartId) {
-  //     console.error("Cart ID is not available.");
-  //     return;
-  //   }
-
-  //   const token = localStorage.getItem("user_token"); // أو حسب المكان اللي مخزنه فيه
-
-  //   try {
-  //     const response = await fetch(
-  //       "http://localhost:8000/api/payment/create-checkout-session",
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: `Bearer ${token}`, // أضفنا التوكن هنا ✅
-  //         },
-  //         // body: JSON.stringify({ cart_id: cartId }) // غالباً لازم ترسل cart_id في الـ body
-  //       }
-  //     );
-
-  //     if (!response.ok) {
-  //       throw new Error(
-  //         `Failed to create checkout session: ${response.statusText}`
-  //       );
-  //     }
-
-  //     const data = await response.json();
-  //     console.log("Checkout session data:", data);
-
-  //     if (data.payment_url) {
-  //       window.location.href = data.payment_url;
-  //     } else {
-  //       throw new Error(
-  //         "Failed to create checkout session. No URL in response."
-  //       );
-  //     }
-  //   } catch (error) {
-  //     console.error("Error during checkout:", error);
-  //   }
-  // };
 
   const handleCheckout = async () => {
     if (!cartId) {
@@ -545,7 +484,7 @@ function Cart() {
                 }}
               >
                 {cartItems.map((item) => {
-                  const { name, image, brandName, specs } =
+                  const { name, image, brandName, specs, stock_quantity } =
                     getProductInfo(item);
                   const itemTotal = item.price * item.quantity;
 
@@ -613,7 +552,7 @@ function Cart() {
                           {item.product_type === "mobile" ? "هاتف" : "إكسسوار"}
                         </Typography>
 
-                        {specs
+                        {/* {specs
                           .filter((spec) => spec.value)
                           .map((spec, index) => (
                             <Typography
@@ -648,24 +587,57 @@ function Cart() {
                                     }}
                                   />
                                   {/* <span>{spec.value}</span>{" "} */}
-                                </Box>
+                        {/* </Box>
                               ) : (
                                 spec.value
                               )}
-                            </Typography>
-                          ))}
+                            </Typography> */}
+                        {/* ))} */}
 
-                        {/* {specs
+                        {specs
                           .filter((spec) => spec.value)
                           .map((spec, index) => (
-                            <Typography
+                            <Box
                               key={index}
-                              variant="body2"
-                              sx={{ color: "#666", marginBottom: "5px" }}
+                              component="span"
+                              sx={{
+                                color: "#666",
+                                marginBottom: "5px",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "8px",
+                              }}
                             >
-                              <strong>{spec.label}:</strong> {spec.value}
-                            </Typography>
-                          ))} */}
+                              <Typography component="span" variant="body2">
+                                <strong>{spec.label}:</strong>
+                              </Typography>
+
+                              {spec.label === "اللون" ? (
+                                <Box
+                                  sx={{
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    gap: "8px",
+                                  }}
+                                >
+                                  <Box
+                                    sx={{
+                                      width: "20px",
+                                      height: "20px",
+                                      borderRadius: "50%",
+                                      backgroundColor: spec.value,
+                                      border: "1px solid #ddd",
+                                      display: "inline-block",
+                                    }}
+                                  />
+                                </Box>
+                              ) : (
+                                <Typography component="span" variant="body2">
+                                  {spec.value}
+                                </Typography>
+                              )}
+                            </Box>
+                          ))}
 
                         <Typography
                           variant="h6"
@@ -683,54 +655,82 @@ function Cart() {
                             display: "flex",
                             alignItems: "center",
                             gap: "10px",
-                            marginBottom: "15px",
                           }}
                         >
+                          {/* زر التقليل */}
                           <IconButton
                             onClick={() =>
-                              updateCartItemQuantity(item.id, item.quantity - 1)
+                              updateCartItemQuantity(
+                                item.id,
+                                Math.max(1, item.quantity - 1)
+                              )
                             }
                             disabled={
                               item.quantity <= 1 || isUpdating === item.id
                             }
-                            color="primary"
                             sx={{
-                              backgroundColor: "#f0f7ff",
-                              "&:hover": { backgroundColor: "#e1f0ff" },
+                              color:
+                                item.quantity > 1 && isUpdating !== item.id
+                                  ? "green"
+                                  : "inherit",
+                              "&:hover": {
+                                backgroundColor:
+                                  item.quantity > 1 && isUpdating !== item.id
+                                    ? "rgba(0, 128, 0, 0.1)"
+                                    : "inherit",
+                              },
                             }}
                           >
                             {isUpdating === item.id &&
                             updateType === "decrease" ? (
-                              <Box sx={{ width: "24px", height: "24px" }} />
+                              <CircularProgress size={20} />
                             ) : (
                               <RemoveIcon />
                             )}
                           </IconButton>
 
-                          <Typography
-                            variant="body1"
-                            sx={{
-                              minWidth: "30px",
-                              textAlign: "center",
-                            }}
-                          >
-                            {item.quantity}
-                          </Typography>
+                          <Typography>{item.quantity}</Typography>
 
+                          {/* زر الزيادة */}
                           <IconButton
-                            onClick={() =>
-                              updateCartItemQuantity(item.id, item.quantity + 1)
+                            onClick={() => {
+                              if (item.quantity >= stock_quantity) {
+                                Swal.fire(
+                                  "تنبيه",
+                                  "لقد وصلت إلى الحد الأقصى للمخزون المتاح",
+                                  "info"
+                                );
+                                return;
+                              }
+                              updateCartItemQuantity(
+                                item.id,
+                                item.quantity + 1
+                              );
+                            }}
+                            disabled={
+                              isUpdating === item.id ||
+                              item.quantity >= stock_quantity
                             }
-                            disabled={isUpdating === item.id}
-                            color="primary"
                             sx={{
-                              backgroundColor: "#f0f7ff",
-                              "&:hover": { backgroundColor: "#e1f0ff" },
+                              color: !(
+                                isUpdating === item.id ||
+                                item.quantity >= stock_quantity
+                              )
+                                ? "green"
+                                : "inherit",
+                              "&:hover": {
+                                backgroundColor: !(
+                                  isUpdating === item.id ||
+                                  item.quantity >= stock_quantity
+                                )
+                                  ? "rgba(0, 128, 0, 0.1)"
+                                  : "inherit",
+                              },
                             }}
                           >
                             {isUpdating === item.id &&
                             updateType === "increase" ? (
-                              <Box sx={{ width: "24px", height: "24px" }} />
+                              <CircularProgress size={20} />
                             ) : (
                               <AddIcon />
                             )}
