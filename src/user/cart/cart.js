@@ -552,48 +552,6 @@ function Cart() {
                           {item.product_type === "mobile" ? "هاتف" : "إكسسوار"}
                         </Typography>
 
-                        {/* {specs
-                          .filter((spec) => spec.value)
-                          .map((spec, index) => (
-                            <Typography
-                              key={index}
-                              variant="body2"
-                              sx={{
-                                color: "#666",
-                                marginBottom: "5px",
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "8px",
-                              }}
-                            >
-                              <strong>{spec.label}:</strong>
-
-                              {spec.label === "اللون" ? (
-                                <Box
-                                  sx={{
-                                    display: "inline-flex",
-                                    alignItems: "center",
-                                    gap: "8px",
-                                  }}
-                                >
-                                  <Box
-                                    sx={{
-                                      width: "20px",
-                                      height: "20px",
-                                      borderRadius: "50%",
-                                      backgroundColor: spec.value,
-                                      border: "1px solid #ddd",
-                                      display: "inline-block",
-                                    }}
-                                  />
-                                  {/* <span>{spec.value}</span>{" "} */}
-                        {/* </Box>
-                              ) : (
-                                spec.value
-                              )}
-                            </Typography> */}
-                        {/* ))} */}
-
                         {specs
                           .filter((spec) => spec.value)
                           .map((spec, index) => (

@@ -155,7 +155,7 @@ function Home() {
   const products = useSelector((state) => state.products.items || []);
   const randomProducts = [...products]
     .sort(() => 0.5 - Math.random())
-    .slice(0, 10);
+    .slice(0, 12);
 
   const handleAddToCart = async (product) => {
     if (isLoading) return;
@@ -303,7 +303,6 @@ function Home() {
 
             return (
               <div key={product.id} className="product-card div-1">
-                {/* <Link to={`/mobiles/${product.id}`}> */}
                   <img
                     src={
                       `http://localhost:8000${product.image_cover}` ||
@@ -313,7 +312,6 @@ function Home() {
                     alt={product.title || "صورة المنتج"}
                     className="imgProduct rounded-3"
                   />
-                {/* </Link> */}
 
                 <div
                   className="favorite-btn"
@@ -330,13 +328,6 @@ function Home() {
                     }}
                   />
                 </div>
-
-                {/* {brands.length > 0 && product.brand_id && (
-                  <p className="product-pric text-center fw-800">
-                    {brands.find((brand) => brand.id === product.brand_id)
-                      ?.name || "غير معروف"}
-                  </p>
-                )} */}
 
                 {product.title && (
                   <p className="product-title text-center fw-bold text-success">
@@ -356,25 +347,8 @@ function Home() {
                     onClick={() => navigate(`/mobiles/${product.id}`)}
                     disabled={isLoading}
                   >
-                    {/* {isLoading ? (
-                      <span className="loader"></span>
-                    ) : (
-                      <> أضف الى {<FaCartPlus />} </>
-                    )} */}
                     عرض التفاصيل
                   </button>
-                  {/* <div
-                    className="favorite-btn col-1"
-                    onClick={() => handleFavorite(product)}
-                  >
-                    <FaHeart
-                      style={{
-                        color: isFavorite ? "red" : "gray",
-                        fontSize: "30px",
-                        cursor: "pointer",
-                      }}
-                    />
-                  </div> */}
                 </div>
               </div>
             );

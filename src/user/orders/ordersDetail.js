@@ -117,9 +117,13 @@ const OrderDetails = () => {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" mt={4}>
+      <>
+      <MyNavbar />
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh" mt={4}>
         <CircularProgress />
       </Box>
+      <Footer />
+      </>
     );
   }
 

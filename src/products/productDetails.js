@@ -27,10 +27,12 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import Swal from "sweetalert2";
+import { selectAllCartItems } from "../user/cart/cartSlice";
 
 const IMAGE_COVER_API = "http://localhost:8000/api/mobiles";
 const ADD_TO_USER_CART = "http://localhost:8000/api/cart-items";
 const BRAND_API = `http://localhost:8000/api/brands`;
+const GET_CART_ITEMS_API = "http://localhost:8000/api/cart"; // إضافة endpoint جديد
 
 function ProductDetails() {
   const { id } = useParams();
@@ -49,14 +51,44 @@ function ProductDetails() {
   const [productDetails, setProductDetails] = useState(null);
   const [messageText, setMessageText] = useState("");
   const [brands, setBrands] = useState({});
+  const [cartQuantity, setCartQuantity] = useState(0); // إضافة state لكمية المنتج في السلة
+
+  const cartItems = useSelector(selectAllCartItems);
 
   const products = useSelector((state) => state.products.items || []);
   const data = products.find((p) => p.id.toString() === id) || null;
+
+  useEffect(() => {
+    if (cartItems.length > 0 && data) {
+      const currentProductInCart = cartItems.filter(
+        (item) =>
+          item.product_id.toString() === id && item.product_type === "mobile"
+      );
+
+      const totalQuantity = currentProductInCart.reduce(
+        (total, item) => total + item.quantity,
+        0
+      );
+
+      setCartQuantity(totalQuantity);
+
+      // إذا وصلت الكمية في السلة إلى الحد الأقصى، اعرض رسالة
+      if (totalQuantity >= data.stock_quantity) {
+        setMessageText(
+          `⚠️ لقد وصلت للحد الأقصى لهذا المنتج (${data.stock_quantity} قطعة)`
+        );
+        setShowMessage(true);
+      }
+    }
+  }, [cartItems, data, id]);
 
   const handleQuantityChange = (e) => {
     const newQuantity = parseInt(e.target.value, 10);
 
     if (isNaN(newQuantity)) return;
+
+    // Add null check for data
+    if (!data) return;
 
     // التحقق من أن الكمية بين 1 والمخزون المتاح
     if (newQuantity >= 1 && newQuantity <= data.stock_quantity) {
@@ -144,10 +176,29 @@ function ProductDetails() {
     const token = localStorage.getItem("user_token");
     const userId = localStorage.getItem("user_id");
 
-    if (quantity > data.stock_quantity) {
+    // Add null check for data
+    if (!data) {
+      setMessageText("❌ حدث خطأ في تحميل بيانات المنتج");
+      setShowMessage(true);
+      return;
+    }
+
+    // حساب الكمية المتبقية في المخزون
+    const availableQuantity = data.stock_quantity - cartQuantity;
+
+    if (quantity + cartQuantity > data.stock_quantity) {
+      Swal.fire(
+        "تنبيه",
+        `لقد وصلت للحد الأقصى لهذا المنتج (${data.stock_quantity} قطعة)`,
+        "info"
+      );
+      return;
+    }
+
+    if (quantity > availableQuantity) {
       Swal.fire(
         "خطأ",
-        `الكمية المطلوبة (${quantity}) تتجاوز المخزون المتاح (${data.stock_quantity})`,
+        `الكمية المطلوبة (${quantity}) تتجاوز الكمية المتاحة (${availableQuantity})`,
         "error"
       );
       return;
@@ -171,12 +222,12 @@ function ProductDetails() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          product_id: id, // سيرسل الـ id الموجود في الـ URL
-          product_type: "mobile", // ثابت كما طلبت
+          product_id: id,
+          product_type: "mobile",
           product_color_id: selectedColor
             ? selectedColor.id
-            : "a27c4023-5051-4364-a581-72cc5311db57", // إما اللون المحدد أو القيمة الافتراضية
-          quantity: quantity, // الكمية المحددة من قبل المستخدم
+            : "a27c4023-5051-4364-a581-72cc5311db57",
+          quantity: quantity,
         }),
       });
 
@@ -186,6 +237,7 @@ function ProductDetails() {
 
       setMessageText("✅ تم إضافة المنتج إلى العربة بنجاح!");
       setShowMessage(true);
+      await fetchCartQuantity(); // تحديث كمية السلة بعد الإضافة
     } catch (error) {
       console.error("خطأ في إضافة المنتج:", error);
       setMessageText("❌ حدث خطأ أثناء إضافة المنتج");
@@ -202,6 +254,65 @@ function ProductDetails() {
   const handleColorSelect = (color) => {
     setSelectedColor(color);
   };
+
+  // دالة لجلب كمية المنتج في السلة
+  const fetchCartQuantity = async () => {
+    const token = localStorage.getItem("user_token");
+    if (!token) {
+      setCartQuantity(0);
+      return;
+    }
+
+    try {
+      const response = await fetch(GET_CART_ITEMS_API, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          // Token is invalid or expired
+          localStorage.removeItem("user_token");
+          setCartQuantity(0);
+          return;
+        }
+        throw new Error("Failed to fetch cart items");
+      }
+
+      const responseData = await response.json();
+
+      // التحقق من وجود البيانات وخاصية cart_items
+      if (
+        responseData.data &&
+        responseData.data.cart_items &&
+        Array.isArray(responseData.data.cart_items)
+      ) {
+        const cartItem = responseData.data.cart_items.find(
+          (item) => item.product_id.toString() === id
+        );
+        setCartQuantity(cartItem ? cartItem.quantity : 0);
+      } else {
+        console.error("Cart data structure is not as expected:", responseData);
+        setCartQuantity(0);
+      }
+    } catch (error) {
+      console.error("Error fetching cart items:", error);
+      setCartQuantity(0);
+    }
+  };
+
+  // جلب كمية السلة عند تحميل المكون
+  useEffect(() => {
+    const token = localStorage.getItem("user_token");
+    if (token) {
+      fetchCartQuantity();
+    }
+  }, [id]);
+
+  // Add null check for data
+  const availableQuantity = data ? data.stock_quantity - cartQuantity : 0;
 
   if (!data) {
     return (
@@ -581,23 +692,6 @@ function ProductDetails() {
                         },
                       }}
                     />
-                    {/* <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleAddToCart}
-                      disabled={
-                        isLoading || (colors.length > 0 && !selectedColor)
-                      }
-                      sx={{ flexGrow: 1 }}
-                      startIcon={
-                        isLoading ? (
-                          <CircularProgress size={20} color="inherit" />
-                        ) : null
-                      }
-                    >
-                      {isLoading ? "جاري الإضافة..." : "إضافة إلى عربة التسوق"}
-                    </Button> */}
-
                     <Button
                       variant="contained"
                       color="primary"
@@ -605,7 +699,8 @@ function ProductDetails() {
                       disabled={
                         isLoading ||
                         (colors.length > 0 && !selectedColor) ||
-                        data.stock_quantity <= 0 // تعطيل الزر إذا لم يكن هناك مخزون
+                        data.stock_quantity <= 0 || // تعطيل الزر إذا لم يكن هناك مخزون
+                        cartQuantity >= data.stock_quantity // تعطيل الزر إذا وصلت للحد الأقصى في السلة
                       }
                       sx={{ flexGrow: 1 }}
                       startIcon={
@@ -616,10 +711,45 @@ function ProductDetails() {
                     >
                       {data.stock_quantity <= 0
                         ? "غير متوفر"
+                        : cartQuantity >= data.stock_quantity
+                        ? "وصلت للحد الأقصى"
                         : isLoading
                         ? "جاري الإضافة..."
                         : "إضافة إلى عربة التسوق"}
                     </Button>
+                  </Box>
+                  <Box sx={{ mt: 2 }}>
+                    {/* <Typography
+                      variant="subtitle1"
+                      color={availableQuantity > 0 ? "green" : "error"}
+                    >
+                      <strong>الكمية المتاحة:</strong> {data.stock_quantity}{" "}
+                      قطعة
+                    </Typography> */}
+                    <Typography variant="subtitle1" sx={{ mt: 1 }}>
+                      <strong>الكمية المتاحة:</strong>{" "}
+                      <span
+                        style={{
+                          color: "green",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {data.stock_quantity - cartQuantity} قطعة
+                      </span>
+                    </Typography>
+                    {/* {cartQuantity > 0 && ( */}
+                      <Typography variant="subtitle1" sx={{ mt: 1 }}>
+                        <strong>الكمية في السلة:</strong>{" "}
+                        <span
+                          style={{
+                            color: "blue",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          {cartQuantity} قطعة
+                        </span>
+                      </Typography>
+                    {/* )} */}
                   </Box>
                 </CardContent>
               </Card>
@@ -638,7 +768,7 @@ function ProductDetails() {
               sx={{ width: "100%" }}
               icon={<CheckCircleIcon fontSize="inherit" />}
             >
-              تم إضافة المنتج إلى العربة بنجاح!
+              ✅ تم تحديث الكمية بنجاح
             </Alert>
           </Snackbar>
         </Box>

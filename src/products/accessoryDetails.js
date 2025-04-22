@@ -25,10 +25,12 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import Swal from "sweetalert2";
+import { selectAllCartItems } from "../user/cart/cartSlice";
 
 const IMAGE_COVER_API = "http://localhost:8000/api/accessories";
 const ADD_TO_USER_CART = "http://localhost:8000/api/cart-items";
 const BRAND_API = `http://localhost:8000/api/brands`;
+const GET_CART_ITEMS_API = "http://localhost:8000/api/cart";
 
 function AccessoryDetails() {
   const { id } = useParams();
@@ -38,16 +40,94 @@ function AccessoryDetails() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
-  const [messageText, setMessageText] = useState(false);
+  const [messageText, setMessageText] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState(null);
   const [mainImage, setMainImage] = useState(null);
   const [productDetails, setProductDetails] = useState(null);
   const [error, setError] = useState(null);
   const [brands, setBrands] = useState({});
+  const [cartQuantity, setCartQuantity] = useState(0);
+
+  const cartItems = useSelector(selectAllCartItems);
 
   const products = useSelector((state) => state.products.items || []);
   const data = products.find((p) => p.id.toString() === id) || null;
+
+  useEffect(() => {
+    if (cartItems.length > 0 && data) {
+      const currentProductInCart = cartItems.filter(
+        (item) =>
+          item.product_id.toString() === id && item.product_type === "accessory"
+      );
+
+      const totalQuantity = currentProductInCart.reduce(
+        (total, item) => total + item.quantity,
+        0
+      );
+
+      setCartQuantity(totalQuantity);
+
+      if (totalQuantity >= data.stock_quantity) {
+        setMessageText(
+          `⚠️ لقد وصلت للحد الأقصى لهذا المنتج (${data.stock_quantity} قطعة)`
+        );
+        setShowMessage(true);
+      }
+    }
+  }, [cartItems, data, id]);
+
+  const fetchCartQuantity = async () => {
+    const token = localStorage.getItem("user_token");
+    if (!token) {
+      setCartQuantity(0);
+      return;
+    }
+
+    try {
+      const response = await fetch(GET_CART_ITEMS_API, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          localStorage.removeItem("user_token");
+          setCartQuantity(0);
+          return;
+        }
+        throw new Error("Failed to fetch cart items");
+      }
+
+      const responseData = await response.json();
+
+      if (
+        responseData.data &&
+        responseData.data.cart_items &&
+        Array.isArray(responseData.data.cart_items)
+      ) {
+        const cartItem = responseData.data.cart_items.find(
+          (item) => item.product_id.toString() === id
+        );
+        setCartQuantity(cartItem ? cartItem.quantity : 0);
+      } else {
+        console.error("Cart data structure is not as expected:", responseData);
+        setCartQuantity(0);
+      }
+    } catch (error) {
+      console.error("Error fetching cart items:", error);
+      setCartQuantity(0);
+    }
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("user_token");
+    if (token) {
+      fetchCartQuantity();
+    }
+  }, [id]);
 
   useEffect(() => {
     if (products.length <= 0) return;
@@ -80,7 +160,6 @@ function AccessoryDetails() {
 
         if (json.data) {
           setProductDetails(json.data);
-          // تعيين الصورة الرئيسية الأولى
           if (json.data.images && json.data.images.length > 0) {
             setMainImage(`http://localhost:8000${json.data.images[0]}`);
           } else if (json.data.image) {
@@ -135,10 +214,8 @@ function AccessoryDetails() {
     );
   }
 
-  // دمج البيانات من المصدرين
   const mergedData = { ...data, ...productDetails };
 
-  // الحصول على جميع الصور المتاحة
   const allImages = mergedData.images || [];
   if (mergedData.image && !allImages.includes(mergedData.image)) {
     allImages.unshift(mergedData.image);
@@ -149,7 +226,6 @@ function AccessoryDetails() {
 
     if (isNaN(newQuantity)) return;
 
-    // التحقق من أن الكمية بين 1 والمخزون المتاح
     if (newQuantity >= 1 && newQuantity <= mergedData.stock_quantity) {
       setQuantity(newQuantity);
     } else if (newQuantity > mergedData.stock_quantity) {
@@ -172,6 +248,26 @@ function AccessoryDetails() {
       return;
     }
 
+    const availableQuantity = mergedData.stock_quantity - cartQuantity;
+
+    if (quantity + cartQuantity > mergedData.stock_quantity) {
+      Swal.fire(
+        "تنبيه",
+        `لقد وصلت للحد الأقصى لهذا المنتج (${mergedData.stock_quantity} قطعة)`,
+        "info"
+      );
+      return;
+    }
+
+    if (quantity > availableQuantity) {
+      Swal.fire(
+        "خطأ",
+        `الكمية المطلوبة (${quantity}) تتجاوز الكمية المتاحة (${availableQuantity})`,
+        "error"
+      );
+      return;
+    }
+
     const token = localStorage.getItem("user_token");
 
     if (!token) {
@@ -184,8 +280,6 @@ function AccessoryDetails() {
 
     setIsLoading(true);
     try {
-      // إضافة إلى سلة المستخدم عبر API
-
       if (token) {
         const response = await fetch(ADD_TO_USER_CART, {
           method: "POST",
@@ -202,7 +296,7 @@ function AccessoryDetails() {
         });
 
         const responseData = await response.json();
-        console.log("بيانات الاستجابة:", responseData); // اطبع بيانات الاستجابة
+        console.log("بيانات الاستجابة:", responseData);
 
         if (!response.ok) {
           throw new Error(
@@ -211,10 +305,13 @@ function AccessoryDetails() {
         }
       }
 
-      setMessageText("✅ تم إضافة المنتج إلى العربة بنجاح!");
+      setMessageText("✅ تم تحديث الكمية بنجاح");
       setShowMessage(true);
+      await fetchCartQuantity();
     } catch (error) {
       console.error("خطأ في إضافة المنتج:", error);
+      setMessageText("❌ حدث خطأ أثناء إضافة المنتج");
+      setShowMessage(true);
     } finally {
       setIsLoading(false);
     }
@@ -384,7 +481,6 @@ function AccessoryDetails() {
                   <Divider sx={{ my: 2 }} />
 
                   <Grid container spacing={2}>
-                    {/* {brands.name && ( */}
                     <Grid item xs={6}>
                       <Typography variant="subtitle1">
                         <strong>الشركة:</strong>{" "}
@@ -394,7 +490,6 @@ function AccessoryDetails() {
                           "غير معروف"}
                       </Typography>
                     </Grid>
-                    {/* )} */}
                     {mergedData.storage && (
                       <Grid item xs={6}>
                         <Typography variant="subtitle1">
@@ -483,38 +578,6 @@ function AccessoryDetails() {
                       justifyContent: "flex-end",
                     }}
                   >
-                    {/* <TextField
-                      type="number"
-                      size="small"
-                      label="الكمية"
-                      value={quantity}
-                      onChange={handleQuantityChange}
-                      inputProps={{
-                        min: 1,
-                        style: {
-                          textAlign: "center",
-                          color: "green", // لون النص أخضر
-                        },
-                      }}
-                      sx={{
-                        width: 100,
-                        "& .MuiOutlinedInput-root": {
-                          "& fieldset": {
-                            borderColor: "green",
-                          },
-                          "&:hover fieldset": {
-                            borderColor: "darkgreen",
-                          },
-                        },
-                        "& .MuiInputLabel-root": {
-                          color: "green",
-                        },
-                        "& .Mui-focused": {
-                          color: "darkgreen",
-                        },
-                      }}
-                    /> */}
-
                     <TextField
                       type="number"
                       size="small"
@@ -523,7 +586,7 @@ function AccessoryDetails() {
                       onChange={handleQuantityChange}
                       inputProps={{
                         min: 1,
-                        max: mergedData.stock_quantity, // الحد الأقصى حسب المخزون
+                        max: mergedData.stock_quantity,
                         style: {
                           textAlign: "center",
                           color: "green",
@@ -547,26 +610,6 @@ function AccessoryDetails() {
                         },
                       }}
                     />
-
-                    {/* <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleAddToCart}
-                      disabled={
-                        isLoading ||
-                        (mergedData.colors &&
-                          mergedData.colors.length > 0 &&
-                          !selectedColor)
-                      }
-                      sx={{ flexGrow: 1 }}
-                      startIcon={
-                        isLoading ? (
-                          <CircularProgress size={20} color="inherit" />
-                        ) : null
-                      }
-                    >
-                      {isLoading ? "جاري الإضافة..." : "إضافة إلى عربة التسوق"}
-                    </Button> */}
                     <Button
                       variant="contained"
                       color="primary"
@@ -576,7 +619,8 @@ function AccessoryDetails() {
                         (mergedData.colors &&
                           mergedData.colors.length > 0 &&
                           !selectedColor) ||
-                        mergedData.stock_quantity <= 0 // تعطيل الزر إذا لم يكن هناك مخزون
+                        mergedData.stock_quantity <= 0 ||
+                        cartQuantity >= mergedData.stock_quantity
                       }
                       sx={{ flexGrow: 1 }}
                       startIcon={
@@ -587,10 +631,38 @@ function AccessoryDetails() {
                     >
                       {mergedData.stock_quantity <= 0
                         ? "غير متوفر"
+                        : cartQuantity >= mergedData.stock_quantity
+                        ? "وصلت للحد الأقصى"
                         : isLoading
                         ? "جاري الإضافة..."
                         : "إضافة إلى عربة التسوق"}
                     </Button>
+                  </Box>
+                  <Box sx={{ mt: 2 }}>
+                    <Typography variant="subtitle1" sx={{ mt: 1 }}>
+                      <strong>الكمية المتاحة:</strong>{" "}
+                      <span
+                        style={{
+                          color: "green",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {mergedData.stock_quantity - cartQuantity} قطعة
+                      </span>
+                    </Typography>
+                    {/* {cartQuantity > 0 && ( */}
+                      <Typography variant="subtitle1" sx={{ mt: 1 }}>
+                        <strong>الكمية في السلة:</strong>{" "}
+                        <span
+                          style={{
+                            color: "blue",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          {cartQuantity} قطعة
+                        </span>
+                      </Typography>
+                    {/* // )} */}
                   </Box>
                 </CardContent>
               </Card>
