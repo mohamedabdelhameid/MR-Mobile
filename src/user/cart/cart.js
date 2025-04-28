@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { Link } from 'react-router-dom';
+
 import {
   selectAllCartItems,
   selectTotalPrice,
@@ -134,6 +136,8 @@ function Cart() {
           { label: "اللون", value: item.color?.color || "غير محدد" },
         ],
         stock: mobile.stock_quantity,
+        type: "mobile",
+        id: mobile.id,
       };
     } else {
       const accessory = accessories.find((a) => a.id === item.product_id);
@@ -151,6 +155,8 @@ function Cart() {
           { label: "اللون", value: color },
         ],
         stock: accessory.stock_quantity,
+        type: "accessory",
+        id: accessory.id,
       };
     }
   };
@@ -381,12 +387,22 @@ function Cart() {
                       <Grid container spacing={2}>
                         {/* صورة المنتج */}
                         <Grid item xs={4} sm={3}>
-                          <CardMedia
-                            component="img"
-                            image={product.image || "/placeholder-product.png"}
-                            alt={product.name}
-                            sx={{ borderRadius: 1, height: 120, objectFit: 'contain' }}
-                          />
+                          <Link to={product.type === 'accessory' ? `/accessories/${product.id}` : `/mobiles/${product.id}`} style={{ textDecoration: 'none' }}>
+                            <CardMedia
+                              component="img"
+                              image={product.image || "/placeholder-product.png"}
+                              alt={product.name}
+                              sx={{ 
+                                borderRadius: 1, 
+                                height: 120, 
+                                objectFit: 'contain',
+                                cursor: 'pointer', // لتغيير شكل المؤشر إلى يد عند التحويم
+                                '&:hover': {
+                                  opacity: 0.8, // تأثير خفيف عند التحويم (اختياري)
+                                }
+                              }}
+                            />
+                          </Link>
                         </Grid>
 
                         {/* تفاصيل المنتج */}
