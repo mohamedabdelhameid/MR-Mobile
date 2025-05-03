@@ -21,11 +21,13 @@ import {
   Snackbar,
   Alert,
   useTheme,
+  Chip,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import Swal from "sweetalert2";
 import { selectAllCartItems } from "../user/cart/cartSlice";
+import { Cancel } from "@mui/icons-material";
 
 const IMAGE_COVER_API = "http://localhost:8000/api/accessories";
 const ADD_TO_USER_CART = "http://localhost:8000/api/cart-items";
@@ -543,6 +545,13 @@ function AccessoryDetails() {
                         </Typography>
                       </Grid>
                     )}
+                    {mergedData.speed && (
+                      <Grid item xs={6}>
+                        <Typography variant="subtitle1">
+                          <strong>الشاحن :</strong> {mergedData.speed} watt
+                        </Typography>
+                      </Grid>
+                    )}
                     {mergedData.color && (
                       <Grid item xs={6}>
                         <Typography
@@ -568,6 +577,23 @@ function AccessoryDetails() {
                       </Grid>
                     )}
                   </Grid>
+                  {mergedData.stock_quantity > 0 ? (
+                    <Chip
+                      label="متاح"
+                      color="success"
+                      icon={<CheckCircleIcon />}
+                      variant="outlined"
+                      style={{ fontWeight: "bold", fontSize: "1rem",marginTop:'15px' }}
+                    />
+                  ) : (
+                    <Chip
+                      label="غير متوفر"
+                      color="error"
+                      icon={<Cancel />}
+                      variant="outlined"
+                      style={{ fontWeight: "bold", fontSize: "1rem",marginTop:'15px' }}
+                    />
+                  )}
 
                   <Box
                     sx={{
@@ -651,17 +677,17 @@ function AccessoryDetails() {
                       </span>
                     </Typography>
                     {/* {cartQuantity > 0 && ( */}
-                      <Typography variant="subtitle1" sx={{ mt: 1 }}>
-                        <strong>الكمية في السلة:</strong>{" "}
-                        <span
-                          style={{
-                            color: "blue",
-                            fontWeight: "bold",
-                          }}
-                        >
-                          {cartQuantity} قطعة
-                        </span>
-                      </Typography>
+                    <Typography variant="subtitle1" sx={{ mt: 1 }}>
+                      <strong>الكمية في السلة:</strong>{" "}
+                      <span
+                        style={{
+                          color: "blue",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {cartQuantity} قطعة
+                      </span>
+                    </Typography>
                     {/* // )} */}
                   </Box>
                 </CardContent>

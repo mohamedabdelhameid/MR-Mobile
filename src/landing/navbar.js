@@ -351,13 +351,13 @@ const MyNavbar = () => {
             {/* ✅ مفضلات */}
             <Link to="/fouvrit" className="position-relative cart-icon me-3">
               <FaHeart className="fs-1 text-danger" />
-              {wishlistCount > 0 && <span className="cart-badge">{wishlistCount}</span>}
+              {/* {wishlistCount > 0 && <span className="cart-badge">{wishlistCount}</span>} */}
             </Link>
 
             {/* ✅ السلة */}
             <Link to="/yourCart" className="position-relative cart-icon me-3">
               <ShoppingCartIcon className="fs-1" />
-              {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+              {/* {cartCount > 0 && <span className="cart-badge">{cartCount}</span>} */}
             </Link>
 
             <button

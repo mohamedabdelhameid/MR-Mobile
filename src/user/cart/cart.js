@@ -502,14 +502,12 @@ function Cart() {
                         },
                       }}
                     >
-                      {/* صورة المنتج */}
                       <Box
                         sx={{
                           width: { xs: "100%", sm: "150px" },
                           height: "150px",
                           borderRadius: "8px",
                           overflow: "hidden",
-                          // backgroundColor: "#f9f9f9",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",

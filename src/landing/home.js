@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchProducts } from "../products/productSlice";
 import { addToCart } from "../user/cart/cartSlice";
@@ -7,6 +7,7 @@ import "./home.css";
 import { FaCartPlus, FaHeart } from "react-icons/fa";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import { Collapse } from "react-bootstrap";
 
 export function Footer() {
   return (
@@ -31,16 +32,28 @@ export function Footer() {
           <div className="hoverShow">
             <span className="fw-bold"> عبدالرحمن عبدالسميع </span>
             <div className="socialMedia m-3">
-              <Link target="_blank">
+              <Link
+                to="https://github.com/abdelrahmanabdelsamie7"
+                target="_blank"
+              >
                 <i className="fa-brands fa-github m-2"></i>
               </Link>
-              <Link target="_blank">
+              <Link
+                to="https://www.linkedin.com/in/abdelrahman-abdelsamie-hussain-177021221/"
+                target="_blank"
+              >
                 <i className="fa-brands fa-linkedin-in m-2"></i>
               </Link>
-              <Link target="_blank">
+              <Link
+                to="https://api.whatsapp.com/send/?phone=201129508321"
+                target="_blank"
+              >
                 <i className="fa-brands fa-whatsapp m-2"></i>
               </Link>
-              <Link target="_blank">
+              <Link
+                to="https://www.facebook.com/profile.php?id=100005529162067"
+                target="_blank"
+              >
                 <i className="fa-brands fa-facebook-f m-2"></i>
               </Link>
             </div>
@@ -58,7 +71,10 @@ export function Footer() {
               >
                 <i className="fa-brands fa-linkedin-in m-2"></i>
               </Link>
-              <Link to="https://wa.me/201280538625" target="_blank">
+              <Link
+                to="https://api.whatsapp.com/send/?phone=201280538625"
+                target="_blank"
+              >
                 <i className="fa-brands fa-whatsapp m-2"></i>
               </Link>
               <Link
@@ -82,7 +98,10 @@ export function Footer() {
               >
                 <i className="fa-brands fa-linkedin-in m-2"></i>
               </Link>
-              <Link to="https://wa.me/+201120203912" target="_blank">
+              <Link
+                to="https://api.whatsapp.com/send/?phone=201120203912"
+                target="_blank"
+              >
                 <i className="fa-brands fa-whatsapp m-2"></i>
               </Link>
               <Link
@@ -99,184 +118,402 @@ export function Footer() {
   );
 }
 
+const ProductCard = React.memo(
+  ({
+    product,
+    isFavorite,
+    openProductId,
+    isLoading,
+    currentProduct,
+    onFavorite,
+    onAddToCart,
+    onColorSelect,
+    onConfirmAdd,
+    onDetails,
+  }) => {
+    const [localSelectedColor, setLocalSelectedColor] = useState(
+      product.selectedColor
+    );
+
+    // مزامنة اللون المختار مع التحديثات القادمة من المكون الأب
+    useEffect(() => {
+      setLocalSelectedColor(product.selectedColor);
+    }, [product.selectedColor]);
+
+    const handleColorSelection = (color) => {
+      setLocalSelectedColor(color);
+      onColorSelect(product.id, color);
+    };
+
+    return (
+      <div className="product-card" style={{ direction: "ltr" }}>
+        <div className="product-header">
+          <button
+            className="favorite-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              onFavorite(product);
+            }}
+            aria-label={isFavorite ? "إزالة من المفضلة" : "إضافة إلى المفضلة"}
+          >
+            <FaHeart className={isFavorite ? "favorite-active" : ""} />
+          </button>
+
+          <span
+            className={`stock-badge ${
+              product.stock_quantity > 0 ? "in-stock" : "out-of-stock"
+            }`}
+          >
+            {product.stock_quantity > 0 ? "متوفر" : "غير متوفر"}
+          </span>
+
+          <img
+            src={
+              `http://localhost:8000${product.image_cover}` ||
+              "/placeholder-product.png"
+            }
+            alt={product.title}
+            onError={(e) => (e.target.src = "/placeholder-product.png")}
+          />
+        </div>
+
+        <div className="product-body">
+          <h3>{product.title}</h3>
+          <p className="price">{product.price} جنيه</p>
+        </div>
+
+        <div className="product-actions">
+          <button className="details-btn" onClick={onDetails}>
+            التفاصيل
+          </button>
+          <button
+            className="cart-btn"
+            onClick={onAddToCart}
+            disabled={isLoading || product.stock_quantity <= 0}
+          >
+            {isLoading && currentProduct === product.id ? (
+              "جاري الإضافة..."
+            ) : (
+              <>
+                <FaCartPlus /> إضافة للسلة
+              </>
+            )}
+          </button>
+        </div>
+
+        <Collapse in={openProductId === product.id}>
+          <div className="product-id-collapse">
+            {product.colors?.length > 0 && (
+              <div className="color-selection" style={{direction:'rtl'}}>
+                <h6>اختر اللون:</h6>
+                <div className="color-options">
+                  {product.colors.map((color) => (
+                    <div
+                      key={color.id}
+                      className={`color-option ${
+                        localSelectedColor?.id === color.id ? "selected" : ""
+                      }`}
+                      onClick={() => handleColorSelection(color)}
+                      style={{
+                        backgroundColor: color.color || "#ddd",
+                        width: "30px",
+                        height: "30px",
+                        borderRadius: "50%",
+                        display: "inline-flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        margin: "0 5px",
+                        cursor: "pointer",
+                        border: "1px solid #ddd",
+                      }}
+                      title={color.name || color.color}
+                    >
+                      {localSelectedColor?.id === color.id && (
+                        <span className="color-check">✓</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <button
+              className="confirm-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                onConfirmAdd({ ...product, selectedColor: localSelectedColor });
+              }}
+              disabled={
+                isLoading || (product.colors?.length > 0 && !localSelectedColor)
+              }
+            >
+              {isLoading && currentProduct === product.id
+                ? "جاري التأكيد..."
+                : "تأكيد الشراء"}
+            </button>
+          </div>
+        </Collapse>
+      </div>
+    );
+  },
+  (prevProps, nextProps) => {
+    // تحسين الأداء بالمقارنة بين الخصائص
+    return (
+      prevProps.product.selectedColor?.id ===
+        nextProps.product.selectedColor?.id &&
+      prevProps.isFavorite === nextProps.isFavorite &&
+      prevProps.openProductId === nextProps.openProductId &&
+      prevProps.isLoading === nextProps.isLoading &&
+      prevProps.currentProduct === nextProps.currentProduct
+    );
+  }
+);
+
 function Home() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const products = useSelector((state) => state.products.items || []);
+
+  // States
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState("");
-  const [showMessage, setShowMessage] = useState("");
   const [isFetching, setIsFetching] = useState(true);
   const [favorites, setFavorites] = useState([]);
   const [brands, setBrands] = useState([]);
-  // const [showMessage, setShowMessage] = useState(false);
   const [messageText, setMessageText] = useState("");
-  const [messageType, setMessageType] = useState("success"); // success | error | info
+  const [showMessage, setShowMessage] = useState(false);
+  const [messageType, setMessageType] = useState("success");
+  const [openProductId, setOpenProductId] = useState(null);
+  const [currentProduct, setCurrentProduct] = useState(null);
+  const [productsWithColors, setProductsWithColors] = useState([]);
+  const [randomizedProducts, setRandomizedProducts] = useState([]);
 
-  const FAVORITE_API = "http://localhost:8000/api/wishlist";
-  const ADD_TO_CART = "http://localhost:8000/api/cart-items";
-  const BRAND_API = "http://localhost:8000/api/brands";
-  const navigate = useNavigate();
+  // API Endpoints
+  const BASE_URL = "http://localhost:8000/api";
+  const FAVORITE_API = `${BASE_URL}/wishlist`;
+  const ADD_TO_CART = `${BASE_URL}/cart-items`;
+  const BRAND_API = `${BASE_URL}/brands`;
+  const MOBILE_API = `${BASE_URL}/mobiles`;
 
+  // جلب البيانات الأولية
   useEffect(() => {
-    setIsFetching(true);
-    dispatch(fetchProducts()).then(() => setIsFetching(false));
+    const fetchInitialData = async () => {
+      setIsFetching(true);
+      try {
+        await dispatch(fetchProducts());
 
-    fetch(BRAND_API)
-      .then((response) => response.json())
-      .then((responseData) => {
-        if (Array.isArray(responseData.data)) {
-          setBrands(responseData.data);
-        } else {
-          console.error("❌ البيانات المسترجعة ليست مصفوفة", responseData);
-          setBrands([]);
+        const [brandsResponse, favoritesResponse] = await Promise.all([
+          fetch(BRAND_API),
+          localStorage.getItem("user_token") &&
+            fetch(FAVORITE_API, {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("user_token")}`,
+              },
+            }),
+        ]);
+
+        const brandsData = await brandsResponse.json();
+        setBrands(Array.isArray(brandsData.data) ? brandsData.data : []);
+
+        if (favoritesResponse) {
+          const favoritesData = await favoritesResponse.json();
+          setFavorites(
+            Array.isArray(favoritesData.data) ? favoritesData.data : []
+          );
         }
-      })
-      .catch((error) => console.error("⚠️ فشل جلب البراندات", error));
+      } catch (error) {
+        console.error("Error fetching initial data:", error);
+        showTempMessage("❌ فشل في تحميل البيانات الأولية", 3000);
+      } finally {
+        setIsFetching(false);
+      }
+    };
 
-    const userToken = localStorage.getItem("user_token");
-
-    if (userToken) {
-      fetch(FAVORITE_API, {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      })
-        .then((response) => response.json())
-        .then((responseData) => {
-          if (Array.isArray(responseData.data)) {
-            setFavorites(responseData.data);
-          } else {
-            setFavorites([]);
-          }
-        })
-        .catch((error) => console.error("⚠️ فشل جلب المفضلة", error));
-    }
+    fetchInitialData();
   }, [dispatch]);
 
-  const products = useSelector((state) => state.products.items || []);
-  const randomProducts = [...products]
-    .sort(() => 0.5 - Math.random())
-    .slice(0, 12);
+  // جلب ألوان المنتجات
+  useEffect(() => {
+    let isMounted = true;
 
-  const handleAddToCart = async (product) => {
-    if (isLoading) return;
+    const fetchColors = async () => {
+      try {
+        const result = await Promise.all(
+          products.map(async (product) => {
+            try {
+              const res = await fetch(`${MOBILE_API}/${product.id}`);
+              const data = await res.json();
+              return {
+                ...product,
+                colors: data.data?.colors || [],
+                selectedColor: null,
+              };
+            } catch (error) {
+              console.error(`Error fetching colors for ${product.id}`, error);
+              return { ...product, colors: [], selectedColor: null };
+            }
+          })
+        );
+        if (isMounted) setProductsWithColors(result);
+      } catch (error) {
+        console.error("Error fetching product colors:", error);
+        if (isMounted) showTempMessage("❌ فشل في تحميل ألوان المنتجات", 3000);
+      }
+    };
 
-    const userToken = localStorage.getItem("user_token");
-    const userId = localStorage.getItem("user_id");
+    if (products.length > 0) fetchColors();
 
-    if (!userToken || !userId) {
-      setMessageText("❌ يجب تسجيل الدخول لإضافة المنتجات إلى السلة!");
-      setMessageType("error");
-      setShowMessage(true);
-      setTimeout(() => navigate("/singeup"), 3000);
-      return;
+    return () => {
+      isMounted = false;
+    };
+  }, [products]);
+
+  // تحديد المنتجات العشوائية
+  useEffect(() => {
+    if (productsWithColors.length > 0) {
+      const uniqueProducts = Array.from(
+        new Map(productsWithColors.map((p) => [p.id, p])).values()
+      );
+      setRandomizedProducts(
+        [...uniqueProducts].sort(() => 0.5 - Math.random()).slice(0, 12)
+      );
     }
+  }, [productsWithColors.length]);
 
-    setIsLoading(true);
-    setMessageText("⏳ جارٍ إضافة المنتج...");
-    setMessageType("info");
+  // عرض رسائل مؤقتة
+  const showTempMessage = useCallback((msg, duration, callback) => {
+    setMessageText(msg);
+    setMessageType(msg.includes("✔") ? "success" : "error");
     setShowMessage(true);
+    setTimeout(() => {
+      setShowMessage(false);
+      if (callback) callback();
+    }, duration);
+  }, []);
 
-    try {
-      const response = await fetch(ADD_TO_CART, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("user_token")}`,
-        },
-        body: JSON.stringify({
-          user_id: userId,
-          product_id: product.id,
-          product_type: product.type || "mobile",
-          quantity: 1,
-        }),
-      });
-
-      if (!response.ok) throw new Error("فشل في إضافة المنتج إلى السلة");
-
-      setMessageText("✔ تم إضافة المنتج إلى السلة بنجاح! 🎉");
-      setMessageType("success");
-    } catch (error) {
-      setMessageText("❌ حدث خطأ، حاول مرة أخرى!");
-      setMessageType("error");
-    }
-
-    setShowMessage(true);
-    setIsLoading(false);
-  };
-
-  const handleFavorite = async (product) => {
-    const userToken = localStorage.getItem("user_token");
-    const userId = localStorage.getItem("user_id");
-
-    if (!userToken || !userId) {
-      setMessageText("❌ يجب تسجيل الدخول لإضافة المنتجات إلى المفضلة!");
-      setMessageType("error");
-      setShowMessage(true);
-      setTimeout(() => navigate("/singeup"), 3000);
-      return;
-    }
-
-    const existingFavorite = favorites.find(
-      (fav) => fav.product_id === product.id && fav.product_type === "mobile"
+  // اختيار لون المنتج
+  const handleColorSelect = useCallback((productId, color) => {
+    setProductsWithColors((prev) =>
+      prev.map((product) =>
+        product.id === productId
+          ? { ...product, selectedColor: color }
+          : product
+      )
     );
+  }, []);
 
-    try {
-      if (existingFavorite) {
-        const response = await fetch(`${FAVORITE_API}/${existingFavorite.id}`, {
-          method: "DELETE",
-          headers: { Authorization: `Bearer ${userToken}` },
-        });
+  // تأكيد إضافة إلى السلة
+  const confirmAddToCart = useCallback(
+    async (product) => {
+      const userToken = localStorage.getItem("user_token");
+      if (!userToken) {
+        showTempMessage("❌ يجب تسجيل الدخول أولاً!", 3000, () =>
+          navigate("/singeup")
+        );
+        return;
+      }
 
-        if (!response.ok) throw new Error("فشل في إزالة المنتج من المفضلة");
+      setIsLoading(true);
+      setCurrentProduct(product.id);
 
-        setFavorites(favorites.filter((fav) => fav.id !== existingFavorite.id));
-        setMessageText("✔ تمت إزالة المنتج من المفضلة!");
-        setMessageType("success");
-      } else {
-        const response = await fetch(FAVORITE_API, {
+      try {
+        const body = {
+          product_id: product.id,
+          product_type: "mobile",
+          quantity: 1,
+        };
+
+        if (product.colors?.length > 0) {
+          if (!product.selectedColor) {
+            showTempMessage("❌ يجب اختيار لون للمنتج!", 3000);
+            setIsLoading(false);
+            return;
+          }
+          body.product_color_id = product.selectedColor.id;
+        }
+
+        const response = await fetch(ADD_TO_CART, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${userToken}`,
           },
-          body: JSON.stringify({
-            user_id: userId,
-            product_id: product.id,
-            product_type: "mobile",
-          }),
+          body: JSON.stringify(body),
         });
 
-        if (!response.ok) throw new Error("فشل في إضافة المنتج إلى المفضلة");
-
-        const newFavorite = await response.json();
-        setFavorites([...favorites, newFavorite.data]);
-        setMessageText("✔ تمت إضافة المنتج إلى المفضلة!");
-        setMessageType("success");
+        const result = await response.json();
+        if (response.ok) {
+          showTempMessage("✔ تمت الإضافة إلى السلة بنجاح!", 3000);
+          setOpenProductId(null);
+        } else {
+          showTempMessage(
+            `❌ ${result.message || "حدث خطأ أثناء الإضافة!"}`,
+            3000
+          );
+        }
+      } catch (error) {
+        showTempMessage("❌ فشل الاتصال بالسيرفر!", 3000);
+      } finally {
+        setIsLoading(false);
+        setCurrentProduct(null);
       }
-    } catch (error) {
-      setMessageText("❌ حدث خطأ أثناء الإضافة!");
-      setMessageType("error");
-    }
+    },
+    [navigate, showTempMessage]
+  );
 
-    setShowMessage(true);
-  };
+  // إدارة المفضلة
+  const handleFavorite = useCallback(
+    async (product) => {
+      const userToken = localStorage.getItem("user_token");
+      const userId = localStorage.getItem("user_id");
+      if (!userToken || !userId) {
+        showTempMessage("❌ يجب تسجيل الدخول أولاً!", 3000, () =>
+          navigate("/singeup")
+        );
+        return;
+      }
 
-  const fetchWishlist = async (token) => {
-    try {
-      const response = await fetch(FAVORITE_API, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!response.ok) throw new Error("فشل في جلب قائمة المفضلة");
-      const data = await response.json();
-      return data.data || [];
-    } catch (error) {
-      console.error("Error fetching wishlist:", error);
-      return [];
-    }
-  };
+      const exists = favorites.find((fav) => fav.product_id === product.id);
+
+      try {
+        if (exists) {
+          const res = await fetch(`${FAVORITE_API}/${exists.id}`, {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${userToken}` },
+          });
+
+          if (res.ok) {
+            setFavorites(favorites.filter((f) => f.id !== exists.id));
+            showTempMessage("✔ تمت الإزالة من المفضلة!", 2000);
+          }
+        } else {
+          const res = await fetch(FAVORITE_API, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${userToken}`,
+            },
+            body: JSON.stringify({
+              user_id: userId,
+              product_id: product.id,
+              product_type: "mobile",
+            }),
+          });
+
+          if (res.ok) {
+            const newFav = await res.json();
+            setFavorites([...favorites, newFav.data]);
+            showTempMessage("✔ تمت الإضافة إلى المفضلة!", 2000);
+          }
+        }
+      } catch (err) {
+        showTempMessage("❌ خطأ أثناء الاتصال بالسيرفر!", 2000);
+      }
+    },
+    [favorites, navigate, showTempMessage]
+  );
 
   return (
-    <div className="container randomProduct my-2">
+    <div className="container randomProduct my-2" style={{ direction: "rtl" }}>
       <div className="flexable">
         <h1 className="text-center text-ran fw-bold mb-2">منتجات مرشحة</h1>
         <button
@@ -287,72 +524,31 @@ function Home() {
         </button>
       </div>
 
-      {isFetching && (
+      {isFetching ? (
         <div className="loading-products">⏳ جارٍ تحميل المنتجات...</div>
-      )}
-      {isLoading && <div className="loading-spinner">⏳ جارٍ المعالجة...</div>}
-      {message && <div className="message-box">{message}</div>}
-
-      {!isFetching && (
-        <div className="product-list div-0">
-          {randomProducts.map((product) => {
-            const isFavorite = favorites.some(
-              (fav) =>
-                fav.product_id === product.id && fav.product_type === "mobile"
-            );
-
-            return (
-              <div key={product.id} className="product-card div-1">
-                  <img
-                    src={
-                      `http://localhost:8000${product.image_cover}` ||
-                      "https://via.placeholder.com/300"
-                    }
-                    width="100%"
-                    alt={product.title || "صورة المنتج"}
-                    className="imgProduct rounded-3"
-                  />
-
-                <div
-                  className="favorite-btn"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleFavorite(product);
-                  }}
-                >
-                  <FaHeart
-                    style={{
-                      color: isFavorite ? "red" : "gray",
-                      fontSize: "20px",
-                      cursor: "pointer",
-                    }}
-                  />
-                </div>
-
-                {product.title && (
-                  <p className="product-title text-center fw-bold text-success">
-                    {product.title}
-                  </p>
-                )}
-
-                {product.price && (
-                  <p className="product-price text-center fw-800">
-                    {product.price} جنية
-                  </p>
-                )}
-
-                <div className="row justify-content-between align-items-center px-4">
-                  <button
-                    className="btn btn-success col-12 rounded-pill"
-                    onClick={() => navigate(`/mobiles/${product.id}`)}
-                    disabled={isLoading}
-                  >
-                    عرض التفاصيل
-                  </button>
-                </div>
-              </div>
-            );
-          })}
+      ) : (
+        <div className="products-grid">
+          {randomizedProducts.map((product) => (
+            <ProductCard
+              key={`${product.id}-${product.selectedColor?.id || "no-color"}`}
+              product={product}
+              isFavorite={favorites.some(
+                (fav) => fav.product_id === product.id
+              )}
+              openProductId={openProductId}
+              isLoading={isLoading}
+              currentProduct={currentProduct}
+              onFavorite={handleFavorite}
+              onAddToCart={() =>
+                setOpenProductId((prev) =>
+                  prev === product.id ? null : product.id
+                )
+              }
+              onColorSelect={handleColorSelect}
+              onConfirmAdd={confirmAddToCart}
+              onDetails={() => navigate(`/mobiles/${product.id}`)}
+            />
+          ))}
         </div>
       )}
 

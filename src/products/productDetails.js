@@ -28,6 +28,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import Swal from "sweetalert2";
 import { selectAllCartItems } from "../user/cart/cartSlice";
+import { Cancel } from "@mui/icons-material";
 
 const IMAGE_COVER_API = "http://localhost:8000/api/mobiles";
 const ADD_TO_USER_CART = "http://localhost:8000/api/cart-items";
@@ -224,9 +225,7 @@ function ProductDetails() {
         body: JSON.stringify({
           product_id: id,
           product_type: "mobile",
-          product_color_id: selectedColor
-            ? selectedColor.id
-            : "a27c4023-5051-4364-a581-72cc5311db57",
+          product_color_id: selectedColor?.id || null ,
           quantity: quantity,
         }),
       });
@@ -550,35 +549,6 @@ function ProductDetails() {
                       <Typography variant="h6" gutterBottom>
                         الألوان المتاحة
                       </Typography>
-                      {/* <Box sx={{ 
-                        display: "flex", 
-                        gap: 2, 
-                        flexWrap: "wrap",
-                        justifyContent: 'flex-end'
-                      }}>
-                        {colors.map((color) => (
-                          <Badge
-                            key={color.id}
-                            color="primary"
-                            badgeContent={selectedColor?.id === color.id ? "✓" : ""}
-                            overlap="circular"
-                          >
-                            <Chip
-                              label={color.color}
-                              onClick={() => handleColorSelect(color)}
-                              sx={{
-                                backgroundColor: selectedColor?.id === color.id ? "primary.main" : "grey.200",
-                                color: selectedColor?.id === color.id ? "primary.contrastText" : "text.primary",
-                                "&:hover": {
-                                  backgroundColor: "primary.light",
-                                  color: "primary.contrastText"
-                                },
-                                minWidth: 80,
-                              }}
-                            />
-                          </Badge>
-                        ))}
-                      </Box> */}
                       <Box
                         sx={{
                           display: "flex",
@@ -620,6 +590,32 @@ function ProductDetails() {
                     </Box>
                   )}
 
+                  {data.stock_quantity > 0 ? (
+                    <Chip
+                      label="متاح"
+                      color="success"
+                      icon={<CheckCircleIcon />}
+                      variant="outlined"
+                      style={{
+                        fontWeight: "bold",
+                        fontSize: "1rem",
+                        marginTop: "15px",
+                      }}
+                    />
+                  ) : (
+                    <Chip
+                      label="غير متوفر"
+                      color="error"
+                      icon={<Cancel />}
+                      variant="outlined"
+                      style={{
+                        fontWeight: "bold",
+                        fontSize: "1rem",
+                        marginTop: "15px",
+                      }}
+                    />
+                  )}
+
                   <Box
                     sx={{
                       mt: 3,
@@ -629,37 +625,6 @@ function ProductDetails() {
                       justifyContent: "flex-end",
                     }}
                   >
-                    {/* <TextField
-                      type="number"
-                      size="small"
-                      label="الكمية"
-                      value={quantity}
-                      onChange={handleQuantityChange}
-                      inputProps={{ min: 1 }}
-                      sx={{
-                        width: 100,
-                        "& .MuiOutlinedInput-root": {
-                          "& fieldset": {
-                            borderColor:
-                              theme.palette.mode === "dark"
-                                ? "rgba(255, 255, 255, 0.23)"
-                                : "rgba(0, 0, 0, 0.23)",
-                          },
-                          "&:hover fieldset": {
-                            borderColor:
-                              theme.palette.mode === "dark"
-                                ? "rgba(255, 255, 255, 0.5)"
-                                : "rgba(0, 0, 0, 0.5)",
-                          },
-                        },
-                        "& .MuiInputLabel-root": {
-                          color:
-                            theme.palette.mode === "dark"
-                              ? "rgba(255, 255, 255, 0.7)"
-                              : "rgba(0, 0, 0, 0.6)",
-                        },
-                      }}
-                    /> */}
                     <TextField
                       type="number"
                       size="small"
@@ -698,7 +663,7 @@ function ProductDetails() {
                       onClick={handleAddToCart}
                       disabled={
                         isLoading ||
-                        (colors.length > 0 && !selectedColor) ||
+                        (colors.length <= 0 && !selectedColor) ||
                         data.stock_quantity <= 0 || // تعطيل الزر إذا لم يكن هناك مخزون
                         cartQuantity >= data.stock_quantity // تعطيل الزر إذا وصلت للحد الأقصى في السلة
                       }
@@ -719,13 +684,6 @@ function ProductDetails() {
                     </Button>
                   </Box>
                   <Box sx={{ mt: 2 }}>
-                    {/* <Typography
-                      variant="subtitle1"
-                      color={availableQuantity > 0 ? "green" : "error"}
-                    >
-                      <strong>الكمية المتاحة:</strong> {data.stock_quantity}{" "}
-                      قطعة
-                    </Typography> */}
                     <Typography variant="subtitle1" sx={{ mt: 1 }}>
                       <strong>الكمية المتاحة:</strong>{" "}
                       <span
@@ -738,17 +696,17 @@ function ProductDetails() {
                       </span>
                     </Typography>
                     {/* {cartQuantity > 0 && ( */}
-                      <Typography variant="subtitle1" sx={{ mt: 1 }}>
-                        <strong>الكمية في السلة:</strong>{" "}
-                        <span
-                          style={{
-                            color: "blue",
-                            fontWeight: "bold",
-                          }}
-                        >
-                          {cartQuantity} قطعة
-                        </span>
-                      </Typography>
+                    <Typography variant="subtitle1" sx={{ mt: 1 }}>
+                      <strong>الكمية في السلة:</strong>{" "}
+                      <span
+                        style={{
+                          color: "blue",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {cartQuantity} قطعة
+                      </span>
+                    </Typography>
                     {/* )} */}
                   </Box>
                 </CardContent>
@@ -779,3 +737,4 @@ function ProductDetails() {
 }
 
 export default ProductDetails;
+

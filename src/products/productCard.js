@@ -26,15 +26,6 @@ function ProductCard({ data }) {
       />
       <div className="div2flex">
         <p id="title" className='ppopo text-success'>{data.title || "Unknown Product"}</p>
-        
-        {/* ✅ عرض اسم العلامة التجارية بناءً على نوع البيانات */}
-        {/* <p id="brand">
-          {data.brand 
-            ? typeof data.brand === "object" 
-              ? data.brand.name 
-              : data.brand
-            : "غير متوفر"}
-        </p> */}
 
         <p id="Price">{data.price ? `${data.price} جنية` : "غير متوفر"}</p>
 

@@ -23,6 +23,7 @@ import AccessoryDetails from "./products/accessoryDetails";
 import SearchResult from './products/search/searchItem';
 import * as serviceWorkerRegistration from './serviceWorker';
 import OrderDetails from './user/orders/ordersDetail';
+import StayTunedPage from './stayTuned/tuned';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -45,6 +46,7 @@ root.render(
           <Route path="/resetPassword" element={< VerifyCode/>} />
           <Route path="/fouvrit" element={< Favorites/>} />
           <Route path="/account" element={< Accountinformation/>} />
+          <Route path="/stay-tuned" element={< StayTunedPage/>} />
           <Route path="/orders/:id" element={<OrderDetails />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

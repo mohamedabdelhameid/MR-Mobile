@@ -91,7 +91,7 @@ const UserOrders = () => {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" mt={4}>
+      <Box display="flex" justifyContent="center" mt={4} className="container">
         <CircularProgress />
       </Box>
     );
@@ -99,7 +99,7 @@ const UserOrders = () => {
 
   if (error) {
     return (
-      <Box p={3}>
+      <Box p={3} className="container">
         <Typography color="error" variant="h6">
           خطأ: {error}
         </Typography>
@@ -117,7 +117,7 @@ const UserOrders = () => {
 
   if (orders.length === 0) {
     return (
-      <Box p={3} textAlign="center">
+      <Box p={3} textAlign="center" className="container">
         <Typography variant="h6">
           لا توجد طلبات سابقة
         </Typography>
@@ -134,53 +134,15 @@ const UserOrders = () => {
   }
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ p: 3 }} className="container">
       <Typography variant="h4" gutterBottom sx={{ mb: 3 }}>
         طلباتي السابقة
       </Typography>
 
-      {/* <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>رقم الطلب</TableCell>
-              <TableCell>التاريخ</TableCell>
-              <TableCell>الحالة</TableCell>
-              <TableCell>المجموع</TableCell>
-              <TableCell>الإجراءات</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {orders.map((order) => (
-              <TableRow key={order.id}>
-                <TableCell>#{order.id.split('-')[0]}</TableCell>
-                <TableCell>{formatDate(order.created_at)}</TableCell>
-                <TableCell>
-                  <Chip 
-                    label={order.status} 
-                    color={getStatusColor(order.status)} 
-                  />
-                </TableCell>
-                <TableCell>{formatPrice(order.total_price)} ج.م</TableCell>
-                <TableCell>
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    onClick={() => handleViewDetails(order.id)}
-                  >
-                    التفاصيل
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer> */}
-
       {/* عرض بديل للجوال */}
       <Box sx={{ display: { xs: 'block'}, mt: 3 }}>
         {orders.map((order) => (
-          <Card key={order.id} sx={{ mb: 2 }}>
+          <Box key={order.id} sx={{ mb: 2 }}>
             <CardContent>
               <Box display="flex" justifyContent="space-between">
                 <Typography variant="h6">طلب #{order.id.split('-')[0]}</Typography>
@@ -190,7 +152,7 @@ const UserOrders = () => {
                   size="small"
                 />
               </Box>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2">
                 {formatDate(order.created_at)}
               </Typography>
               <Divider sx={{ my: 2 }} />
@@ -211,7 +173,7 @@ const UserOrders = () => {
                 عرض التفاصيل
               </Button>
             </CardContent>
-          </Card>
+          </Box>
         ))}
       </Box>
     </Box>
