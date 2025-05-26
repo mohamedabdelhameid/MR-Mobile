@@ -124,7 +124,10 @@ function ProductDetails() {
         });
         setBrands(brandMap);
       })
-      .catch((error) => console.error("Error fetching brands:", error));
+      .catch((error) => {
+        // console.error("Error fetching brands:", error)
+        }
+      );
   }, [products]);
 
   useEffect(() => {
@@ -140,7 +143,7 @@ function ProductDetails() {
           }
         }
       } catch (error) {
-        console.error("خطأ في جلب بيانات المنتج:", error);
+        // console.error("خطأ في جلب بيانات المنتج:", error);
       }
     };
 
@@ -155,7 +158,7 @@ function ProductDetails() {
           setColors([]);
         }
       } catch (error) {
-        console.error("خطأ في جلب الألوان:", error);
+        // console.error("خطأ في جلب الألوان:", error);
       }
     };
 
@@ -225,7 +228,7 @@ function ProductDetails() {
         body: JSON.stringify({
           product_id: id,
           product_type: "mobile",
-          product_color_id: selectedColor?.id || null ,
+          product_color_id: selectedColor?.id || null,
           quantity: quantity,
         }),
       });
@@ -238,7 +241,7 @@ function ProductDetails() {
       setShowMessage(true);
       await fetchCartQuantity(); // تحديث كمية السلة بعد الإضافة
     } catch (error) {
-      console.error("خطأ في إضافة المنتج:", error);
+      // console.error("خطأ في إضافة المنتج:", error);
       setMessageText("❌ حدث خطأ أثناء إضافة المنتج");
       setShowMessage(true);
     } finally {
@@ -293,11 +296,11 @@ function ProductDetails() {
         );
         setCartQuantity(cartItem ? cartItem.quantity : 0);
       } else {
-        console.error("Cart data structure is not as expected:", responseData);
+        // // console.error("Cart data structure is not as expected:", responseData);
         setCartQuantity(0);
       }
     } catch (error) {
-      console.error("Error fetching cart items:", error);
+      // console.error("Error fetching cart items:", error);
       setCartQuantity(0);
     }
   };
@@ -336,7 +339,7 @@ function ProductDetails() {
 
   return (
     <>
-      <MyNavbar />
+      {/* <MyNavbar /> */}
       <Box
         sx={{
           marginTop: "85px",
@@ -472,9 +475,24 @@ function ProductDetails() {
                   </Typography>
 
                   <Box display="flex" alignItems="center" mb={2}>
-                    <Typography variant="h4" color="primary">
-                      {data.price} جنيه
-                    </Typography>
+                    {data.discount ? (
+                      <>
+                        <Typography
+                          variant="h5"
+                          color="textSecondary"
+                          sx={{ textDecoration: "line-through", mr: 1 }}
+                        >
+                          {data.price} جنيه
+                        </Typography>
+                        <Typography variant="h4" color="primary">
+                          {data.final_price} جنيه
+                        </Typography>
+                      </>
+                    ) : (
+                      <Typography variant="h4" color="primary">
+                        {data.price} جنيه
+                      </Typography>
+                    )}
                   </Box>
 
                   <Typography variant="body1" paragraph>
@@ -663,7 +681,7 @@ function ProductDetails() {
                       onClick={handleAddToCart}
                       disabled={
                         isLoading ||
-                        (colors.length <= 0 && !selectedColor) ||
+                        (colors.length >= 0 && !selectedColor) ||
                         data.stock_quantity <= 0 || // تعطيل الزر إذا لم يكن هناك مخزون
                         cartQuantity >= data.stock_quantity // تعطيل الزر إذا وصلت للحد الأقصى في السلة
                       }
@@ -737,4 +755,3 @@ function ProductDetails() {
 }
 
 export default ProductDetails;
-

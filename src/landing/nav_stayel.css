@@ -276,3 +276,23 @@ left: 30px;
 .navbar-toggler-icon {
   filter: invert(61%) sepia(63%) saturate(320%) hue-rotate(90deg);
 }
+
+
+.cart-icon.animate {
+  animation: bump 0.3s ease;
+}
+
+@keyframes bump {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.25);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

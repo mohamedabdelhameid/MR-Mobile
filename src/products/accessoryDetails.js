@@ -325,7 +325,7 @@ function AccessoryDetails() {
 
   return (
     <>
-      <MyNavbar />
+      {/* <MyNavbar /> */}
       <Box
         sx={{
           direction: "rtl",

@@ -16,11 +16,18 @@ import {
   Button,
   IconButton,
   CircularProgress,
+  Fade,
+  Paper,
+  Grid,
+  Backdrop,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
+import { CloseOutlined } from "@mui/icons-material";
+import { Modal } from "react-bootstrap";
+import PaymentModal from "./modal";
 
 const CART_API = "http://localhost:8000/api/cart";
 const MOBILES_API = "http://localhost:8000/api/mobiles";
@@ -46,6 +53,8 @@ function Cart() {
   const [cartId, setCartId] = useState(null);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [isClearingCart, setIsClearingCart] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+
 
   useEffect(() => {
     const userToken = localStorage.getItem("user_token");
@@ -324,7 +333,7 @@ function Cart() {
   if (loading)
     return (
       <>
-        <MyNavbar />
+        {/* <MyNavbar /> */}
         <Box
           sx={{
             display: "flex",
@@ -333,61 +342,73 @@ function Cart() {
             height: "70vh",
           }}
         >
-          <Typography variant="h5">جارٍ تحميل بيانات السلة...</Typography>
+          <Typography variant="h5" sx={{ direction: "rtl" }}>
+            جارٍ تحميل بيانات السلة...
+          </Typography>
         </Box>
         <Footer />
       </>
     );
 
-  const handleCheckout = async () => {
-    if (!cartId) {
-      console.error("Cart ID is not available.");
-      return;
-    }
+  // const handleCheckout = async () => {
+  //   if (!cartId) {
+  //     console.error("Cart ID is not available.");
+  //     return;
+  //   }
 
-    setIsCheckingOut(true); // بدء التحميل
+  //   setIsCheckingOut(true); // بدء التحميل
 
-    const token = localStorage.getItem("user_token");
+  //   const token = localStorage.getItem("user_token");
 
-    try {
-      const response = await fetch(
-        "http://localhost:8000/api/payment/create-checkout-session",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ cart_id: cartId }), // إضافة cart_id إلى body الطلب
-        }
-      );
+  //   try {
+  //     const response = await fetch(
+  //       "http://localhost:8000/api/payment/create-checkout-session",
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //         body: JSON.stringify({ cart_id: cartId }), // إضافة cart_id إلى body الطلب
+  //       }
+  //     );
 
-      if (!response.ok) {
-        throw new Error(
-          `Failed to create checkout session: ${response.statusText}`
-        );
-      }
+  //     if (!response.ok) {
+  //       throw new Error(
+  //         `Failed to create checkout session: ${response.statusText}`
+  //       );
+  //     }
 
-      const data = await response.json();
-      console.log("Checkout session data:", data);
+  //     const data = await response.json();
+  //     console.log("Checkout session data:", data);
 
-      if (data.payment_url) {
-        window.location.href = data.payment_url;
-      } else {
-        throw new Error(
-          "Failed to create checkout session. No URL in response."
-        );
-      }
-    } catch (error) {
-      console.error("Error during checkout:", error);
-      Swal.fire(
-        "خطأ",
-        "حدث خطأ أثناء محاولة الدفع، يرجى المحاولة لاحقاً",
-        "error"
-      );
-    } finally {
-      setIsCheckingOut(false); // إيقاف التحميل
-    }
+  //     if (data.payment_url) {
+  //       window.location.href = data.payment_url;
+  //     } else {
+  //       throw new Error(
+  //         "Failed to create checkout session. No URL in response."
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.error("Error during checkout:", error);
+  //     Swal.fire(
+  //       "خطأ",
+  //       "حدث خطأ أثناء محاولة الدفع، يرجى المحاولة لاحقاً",
+  //       "error"
+  //     );
+  //   } finally {
+  //     setIsCheckingOut(false); // إيقاف التحميل
+  //   }
+  // };
+
+  const handleCheckout = () => {
+    setIsCheckingOut(true); // بدء التحميل لعرض المودال
+    setShowPaymentModal(true); // فتح نافذة الدفع
+  };
+
+  const handleClosePaymentModal = () => {
+    setShowPaymentModal(false);
+    setIsCheckingOut(false);
   };
 
   if (error)
@@ -408,7 +429,7 @@ function Cart() {
 
   return (
     <>
-      <MyNavbar />
+      {/* <MyNavbar /> */}
       <Box
         sx={{
           minHeight: "100vh",
@@ -700,6 +721,7 @@ function Cart() {
                           startIcon={<DeleteIcon />}
                           sx={{
                             color: "#f44336",
+                            direction: "rtl",
                             "&:hover": {
                               backgroundColor: "rgba(244, 67, 54, 0.04)",
                             },
@@ -825,6 +847,7 @@ function Cart() {
                         sx={{
                           position: "absolute",
                           left: "20px",
+                          direction: "rtl",
                         }}
                       />
                       جاري الإفراغ...
@@ -837,6 +860,9 @@ function Cart() {
             </Box>
           )}
         </Box>
+
+          <PaymentModal open={showPaymentModal} onClose={handleClosePaymentModal} />
+
 
         <Footer />
       </Box>

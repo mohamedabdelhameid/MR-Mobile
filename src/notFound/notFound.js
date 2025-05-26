@@ -9,7 +9,7 @@ const NotFound = () => {
 
   return (
     <>
-      <img src={Logo} alt="" width='100px' style={{position:'absolute',top:'10px',left:'30px'}}/>
+      {/* <img src={Logo} alt="" width='100px' style={{position:'absolute',top:'10px',left:'30px'}}/> */}
       <Box className="notFound" display="flex" flexDirection="column" justifyContent="center" alignItems="center" height="100vh" textAlign="center">
         <img src={img} alt=""/>
         <Typography variant="h5" mb={2}>

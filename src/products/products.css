@@ -63,14 +63,6 @@ body.dark-mode .cart-btn:disabled {
   background-color: #666;
 }
 
-body.dark-mode .favorite-btn {
-  color: #666;
-}
-
-body.dark-mode .favorite-btn .favorite-active {
-  color: #1976d2;
-}
-
 body.dark-mode .stock-badge.in-stock {
   background-color: #1976d2;
   color: #ffffff;
@@ -183,6 +175,7 @@ body.dark-mode .filter-option.active {
   gap: 25px;
   justify-content: flex-end;
 }
+
 
 /* كروت المنتجات */
 .product-card {
@@ -447,6 +440,11 @@ body.dark-mode .filter-option.active {
   }
 }
 
+@media (max-width: 400px) {
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
+}
 
 
 .brand-filter {

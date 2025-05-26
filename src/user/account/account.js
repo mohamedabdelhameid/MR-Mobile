@@ -30,6 +30,11 @@ function AccountInformation() {
     })
       .then((response) => {
         if (!response.ok) {
+
+          setTimeout(() => {
+            window.location.reload(); // إعادة تحميل الصفحة
+            navigate('/singeup');
+          }, 3000);
           throw new Error("فشل في جلب البيانات، تحقق من التوكين.");
         }
         return response.json();
@@ -76,7 +81,7 @@ function AccountInformation() {
   if (loading)
     return (
       <>
-        <MyNavbar />
+        {/* <MyNavbar /> */}
         <div className={styles.container1}>
           <div className={styles.card}>
             <h1 className={styles.loading}>جارٍ تحميل البيانات...</h1>
@@ -87,7 +92,7 @@ function AccountInformation() {
   if (error)
     return (
       <>
-        <MyNavbar />
+        {/* <MyNavbar /> */}
         <div className={styles.container1}>
           <div className={styles.card}>
             <h1 className={styles.error}>{error}</h1>
@@ -98,7 +103,7 @@ function AccountInformation() {
 
   return (
     <>
-      <MyNavbar />
+      {/* <MyNavbar /> */}
       <div className={styles.container1}>
         <div className={styles.card}>
           <h1 className={styles.title}>معلومات الحساب</h1>
