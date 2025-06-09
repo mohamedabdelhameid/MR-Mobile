@@ -26,11 +26,8 @@ const Signup = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [country, setCountry] = useState("Egypt");
   const [city, setCity] = useState("");
-  const [street, setStreet] = useState("");
-  const [apartment, setApartment] = useState("");
-  const [floor, setFloor] = useState("");
-  const [building, setBuilding] = useState("");
-  const [postalCode, setPostalCode] = useState("");
+  const [area, setArea] = useState("");
+
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -54,20 +51,8 @@ const Signup = () => {
       case "city":
         setCity(value);
         break;
-      case "street":
-        setStreet(value);
-        break;
-      case "building":
-        setBuilding(value);
-        break;
-      case "apartment":
-        setApartment(value);
-        break;
-      case "floor":
-        setFloor(value);
-        break;
-      case "postal_code":
-        setPostalCode(value);
+      case "area":
+        setArea(value);
         break;
       case "password":
         setPassword(value);
@@ -182,11 +167,7 @@ const Signup = () => {
       phone_number: phoneNumber,
       country,
       city,
-      street,
-      apartment,
-      floor,
-      building,
-      postal_code: postalCode,
+      area,
     };
 
     try {
@@ -565,65 +546,18 @@ const Signup = () => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                label="الشارع"
-                name="street"
+                label="العنوان"
+                name="area"
                 variant="outlined"
                 fullWidth
                 margin="normal"
-                value={street}
-                onChange={(e) => setStreet(e.target.value)}
+                value={area}
+                onChange={(e) => setArea(e.target.value)}
                 required
               />
             </Grid>
           </Grid>
 
-          {/* المبنى والشقة والطابق في صف واحد */}
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={4}>
-              <TextField
-                label="المبنى"
-                name="building"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                value={building}
-                onChange={(e) => setBuilding(e.target.value)}
-                required
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <TextField
-                label="الشقة"
-                name="apartment"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                value={apartment}
-                onChange={(e) => setApartment(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <TextField
-                label="الطابق"
-                name="floor"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                value={floor}
-                onChange={(e) => setFloor(e.target.value)}
-              />
-            </Grid>
-          </Grid>
-
-          <TextField
-            label="الرمز البريدي"
-            name="postal_code"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={postalCode}
-            onChange={(e) => setPostalCode(e.target.value)}
-          />
 
           <TextField
             label="كلمة المرور"
@@ -680,7 +614,7 @@ const Signup = () => {
           <Typography variant="body2" sx={{ color: "text.secondary" }}>
             لديك حساب بالفعل؟{" "}
             <Link
-              to="/singeup"
+              to="/signeup"
               style={{ color: theme.palette.primary.main, fontWeight: "bold" }}
             >
               تسجيل الدخول

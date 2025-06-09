@@ -52,7 +52,7 @@ const VerifyCode = () => {
       if (response.ok) {
         setSuccess("🎉 تم استعادة كلمة السر بنجاح!");
         setTimeout(() => {
-          navigate("/singeup");
+          navigate("/signeup");
         }, 3000);
       } else {
         setError(data.message || "❌ حدث خطأ ما يرجى المحاولة لاحقًا.");

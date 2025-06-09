@@ -147,7 +147,7 @@ const OrderDetails = () => {
   if (loading) {
     return (
       <>
-        {/* <MyNavbar /> */}
+        <MyNavbar />
         <Box 
           display="flex" 
           justifyContent="center" 
@@ -166,7 +166,7 @@ const OrderDetails = () => {
   if (error) {
     return (
       <>
-        {/* <MyNavbar /> */}
+        <MyNavbar />
         <Box 
           p={3} 
           className="container"
@@ -191,7 +191,7 @@ const OrderDetails = () => {
   if (!order) {
     return (
       <>
-        {/* <MyNavbar /> */}
+        <MyNavbar />
         <Box 
           p={3} 
           textAlign="center" 
@@ -215,7 +215,7 @@ const OrderDetails = () => {
 
   return (
     <>
-      {/* <MyNavbar /> */}
+      <MyNavbar />
 
       <Box 
         sx={{ 

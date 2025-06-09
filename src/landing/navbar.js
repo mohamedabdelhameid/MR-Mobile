@@ -208,10 +208,10 @@
 
 //               <Nav.Link
 //                 as={Link}
-//                 to={isLoggedIn ? "/account" : "/singeup"}
-//                 className={`sing ${activeTab === "/singeup" ? "active" : ""}`}
+//                 to={isLoggedIn ? "/account" : "/signeup"}
+//                 className={`sing ${activeTab === "/signeup" ? "active" : ""}`}
 //                 onClick={() => {
-//                   setActiveTab("/singeup");
+//                   setActiveTab("/signeup");
 //                   setExpanded(false);
 //                 }}
 //               >
@@ -389,7 +389,7 @@ const MyNavbar = () => {
             onAnimationEnd={() => setWishlistAnimate(false)}
           >
             <FaHeart className="fs-1 text-danger" />
-            {wishlistCount > 0 && <span className="cart-badge">{wishlistCount}</span>}
+            {/* {wishlistCount > 0 && <span className="cart-badge">{wishlistCount}</span>} */}
           </Link>
 
           {/* أيقونة السلة مع العداد */}
@@ -399,7 +399,7 @@ const MyNavbar = () => {
             onAnimationEnd={() => setCartAnimate(false)}
           >
             <ShoppingCartIcon className="fs-1" />
-            {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+            {/* {cartCount > 0 && <span className="cart-badge">{cartCount}</span>} */}
           </Link>
 
           {/* زر البحث للجوال */}
@@ -455,10 +455,10 @@ const MyNavbar = () => {
             </Nav.Link>
             <Nav.Link 
               as={Link} 
-              to={isLoggedIn ? "/account" : "/singeup"} 
-              className={`sing ${activeTab === "/singeup" ? "active" : ""}`} 
+              to={isLoggedIn ? "/account" : "/signeup"} 
+              className={`sing ${activeTab === "/signeup" ? "active" : ""}`} 
               onClick={() => { 
-                setActiveTab("/singeup"); 
+                setActiveTab("/signeup"); 
                 setExpanded(false); 
               }}
             >

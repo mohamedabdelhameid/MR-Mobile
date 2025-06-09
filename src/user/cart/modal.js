@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Modal,
   Backdrop,
@@ -9,12 +9,73 @@ import {
   Button,
   IconButton,
   Grid,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  TextField,
+  Alert,
 } from "@mui/material";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import imgVFE from "./images/VFECash.jpg";
 import imgInsta from "./images/Instapay.jpg";
 
-function PaymentModal({ open, onClose }) {
+function PaymentModal({ open, onClose, orderId }) {
+  const [paymentMethod, setPaymentMethod] = useState("instapay");
+  const [paymentProof, setPaymentProof] = useState(null);
+  const [note, setNote] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
+
+  const handlePaymentSubmit = async () => {
+    setError("");
+    setSuccessMsg("");
+
+    const token = localStorage.getItem("user_token");
+    if (!token) {
+      setError("يجب تسجيل الدخول أولاً");
+      return;
+    }
+
+    if (!paymentProof) {
+      setError("يرجى رفع صورة إثبات الدفع");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("order_id", orderId);
+    formData.append("payment_method", paymentMethod);
+    formData.append("payment_proof", paymentProof);
+    formData.append("note", note);
+
+    try {
+      setLoading(true);
+      const response = await fetch("http://localhost:8000/api/orders", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error("حدث خطأ أثناء إرسال البيانات");
+
+      setSuccessMsg("تم إرسال بيانات الدفع بنجاح");
+      setTimeout(() => {
+        onClose();
+        // إعادة التهيئة
+        setPaymentMethod("instapay");
+        setPaymentProof(null);
+        setNote("");
+        setSuccessMsg("");
+      }, 1500);
+    } catch (err) {
+      setError(err.message || "حدث خطأ غير متوقع");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Modal
       open={open}
@@ -25,8 +86,8 @@ function PaymentModal({ open, onClose }) {
         backdrop: {
           timeout: 500,
           style: {
-            backdropFilter: "blur(5px)", // تأثير البلور
-            backgroundColor: "rgba(0,0,0,0.4)", // خلفية شفافة داكنة
+            backdropFilter: "blur(5px)",
+            backgroundColor: "rgba(0,0,0,0.4)",
           },
         },
       }}
@@ -60,70 +121,74 @@ function PaymentModal({ open, onClose }) {
             <CloseOutlinedIcon />
           </IconButton>
 
-          <Typography
-            variant="h5"
-            component="h2"
-            sx={{ mb: 3, textAlign: "center" }}
-          >
-            اختر طريقة الدفع
+          <Typography variant="h5" sx={{ mb: 3, textAlign: "center" }}>
+            إتمام الدفع
           </Typography>
 
-          <Grid container spacing={3}>
-            {/* InstaPay QR */}
-            <Grid item xs={12} md={6}>
-              <Paper
-                elevation={2}
-                sx={{
-                  p: 3,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-              >
-                <Typography variant="h6" sx={{ mb: 2 }}>
-                  الدفع عبر InstaPay
-                </Typography>
-                <Box
-                  component="img"
-                  src={imgInsta}
-                  alt="InstaPay QR"
-                  sx={{ width: 200, height: 200, objectFit: "contain", mb: 2 }}
-                />
-              </Paper>
-            </Grid>
+          {/* اختيار طريقة الدفع */}
+          <RadioGroup
+            row
+            value={paymentMethod}
+            onChange={(e) => setPaymentMethod(e.target.value)}
+            sx={{ justifyContent: "center", mb: 2 }}
+          >
+            <FormControlLabel
+              value="instapay"
+              control={<Radio />}
+              label="InstaPay"
+            />
+            <FormControlLabel
+              value="vodafone_cash"
+              control={<Radio />}
+              label="فودافون كاش"
+            />
+          </RadioGroup>
 
-            {/* Wallet QR */}
-            <Grid item xs={12} md={6}>
-              <Paper
-                elevation={2}
-                sx={{
-                  p: 3,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-              >
-                <Typography variant="h6" sx={{ mb: 2 }}>
-                  الدفع عبر المحفظة الإلكترونية
-                </Typography>
-                <Box
-                  component="img"
-                  src={imgVFE}
-                  alt="Wallet QR"
-                  sx={{ width: 200, height: 200, objectFit: "contain", mb: 2 }}
-                />
-              </Paper>
-            </Grid>
-          </Grid>
+          {/* QR Code */}
+          <Box textAlign="center" mb={2}>
+            <img
+              src={paymentMethod === "instapay" ? imgInsta : imgVFE}
+              alt="QR Code"
+              style={{ width: 200, height: 200, objectFit: "contain" }}
+            />
+          </Box>
 
-          <Box sx={{ mt: 3, textAlign: "center" }}>
+          {/* رفع صورة إثبات الدفع */}
+          <Box mb={2}>
+            <Typography variant="subtitle1" gutterBottom>
+              صورة إثبات الدفع
+            </Typography>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setPaymentProof(e.target.files[0])}
+            />
+          </Box>
+
+          {/* ملاحظات */}
+          <TextField
+            fullWidth
+            label="ملاحظات (اختياري)"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            multiline
+            minRows={2}
+            sx={{ mb: 2 }}
+          />
+
+          {/* رسائل التنبيه */}
+          {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+          {successMsg && <Alert severity="success" sx={{ mb: 2 }}>{successMsg}</Alert>}
+
+          <Box textAlign="center">
             <Button
               variant="contained"
               color="primary"
-              onClick={onClose}
+              onClick={handlePaymentSubmit}
+              disabled={loading}
               sx={{ px: 4, py: 1.5 }}
             >
-              إغلاق
+              {loading ? "جاري الإرسال..." : "إرسال"}
             </Button>
           </Box>
         </Paper>

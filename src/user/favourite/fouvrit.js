@@ -164,7 +164,7 @@ const Favorites = () => {
 
   return (
     <div className="favorites-page">
-      {/* <MyNavbar /> */}
+      <MyNavbar />
 
       <Box
         sx={{

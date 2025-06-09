@@ -33,7 +33,7 @@ function AccountInformation() {
 
           setTimeout(() => {
             window.location.reload(); // إعادة تحميل الصفحة
-            navigate('/singeup');
+            navigate('/signeup');
           }, 3000);
           throw new Error("فشل في جلب البيانات، تحقق من التوكين.");
         }
@@ -81,7 +81,7 @@ function AccountInformation() {
   if (loading)
     return (
       <>
-        {/* <MyNavbar /> */}
+        <MyNavbar />
         <div className={styles.container1}>
           <div className={styles.card}>
             <h1 className={styles.loading}>جارٍ تحميل البيانات...</h1>
@@ -92,7 +92,7 @@ function AccountInformation() {
   if (error)
     return (
       <>
-        {/* <MyNavbar /> */}
+        <MyNavbar />
         <div className={styles.container1}>
           <div className={styles.card}>
             <h1 className={styles.error}>{error}</h1>
@@ -103,7 +103,7 @@ function AccountInformation() {
 
   return (
     <>
-      {/* <MyNavbar /> */}
+      <MyNavbar />
       <div className={styles.container1}>
         <div className={styles.card}>
           <h1 className={styles.title}>معلومات الحساب</h1>
@@ -118,7 +118,7 @@ function AccountInformation() {
             <strong>📞 رقم الهاتف:</strong> {account.phone_number}
           </p>
           <p>
-            <strong>📍 العنوان:</strong> {account.street + " " + account.city}
+            <strong>📍 العنوان:</strong> {account.area + " " + account.city}
           </p>
 
           <button

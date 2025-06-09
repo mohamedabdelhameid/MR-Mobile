@@ -9,116 +9,6 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import { Collapse } from "react-bootstrap";
 
-// export function Footer() {
-//   return (
-//     <div className="rtl container text-center mt-4">
-//       <p>
-//         &copy; {"   "}
-//         <b>
-//           <Link
-//             className="Mo"
-//             to={"https://www.facebook.com/profile.php?id=100063776365288"}
-//             target="_blank"
-//           >
-//             مستر موبايل
-//           </Link>
-//         </b>
-//         2025.
-//       </p>
-//       <p>*كل ما هو جديد في عالم الهواتف الذكيه*</p>
-//       <div>
-//         <p>تم التصميم بواسطه : </p>
-//         <div className="GRIDING my-3">
-//           <div className="hoverShow">
-//             <span className="fw-bold"> عبدالرحمن عبدالسميع </span>
-//             <div className="socialMedia m-3">
-//               <Link
-//                 to="https://github.com/abdelrahmanabdelsamie7"
-//                 target="_blank"
-//               >
-//                 <i className="fa-brands fa-github m-2"></i>
-//               </Link>
-//               <Link
-//                 to="https://www.linkedin.com/in/abdelrahman-abdelsamie-hussain-177021221/"
-//                 target="_blank"
-//               >
-//                 <i className="fa-brands fa-linkedin-in m-2"></i>
-//               </Link>
-//               <Link
-//                 to="https://api.whatsapp.com/send/?phone=201129508321"
-//                 target="_blank"
-//               >
-//                 <i className="fa-brands fa-whatsapp m-2"></i>
-//               </Link>
-//               <Link
-//                 to="https://www.facebook.com/profile.php?id=100005529162067"
-//                 target="_blank"
-//               >
-//                 <i className="fa-brands fa-facebook-f m-2"></i>
-//               </Link>
-//             </div>
-//           </div>
-//           <br />
-//           <div className="hoverShow">
-//             <span className="fw-bold"> محمد محمود حامد </span>
-//             <div className="socialMedia m-3">
-//               <Link to="https://github.com/mohamedmahmoudhamid" target="_blank">
-//                 <i className="fa-brands fa-github m-2"></i>
-//               </Link>
-//               <Link
-//                 to="https://www.linkedin.com/in/mohamed-mahmoud-hamid-2b1b44313?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
-//                 target="_blank"
-//               >
-//                 <i className="fa-brands fa-linkedin-in m-2"></i>
-//               </Link>
-//               <Link
-//                 to="https://api.whatsapp.com/send/?phone=201280538625"
-//                 target="_blank"
-//               >
-//                 <i className="fa-brands fa-whatsapp m-2"></i>
-//               </Link>
-//               <Link
-//                 to="https://www.facebook.com/profile.php?id=100022375840375&mibextid=ZbWKwL"
-//                 target="_blank"
-//               >
-//                 <i className="fa-brands fa-facebook-f m-2"></i>
-//               </Link>
-//             </div>
-//           </div>
-//           <br />
-//           <div className="hoverShow">
-//             <span className="fw-bold"> محمد عبدالحميد </span>
-//             <div className="socialMedia m-3">
-//               <Link to="https://github.com/mohamedabdelhameid" target="_blank">
-//                 <i className="fa-brands fa-github m-2"></i>
-//               </Link>
-//               <Link
-//                 to="https://www.linkedin.com/in/mohamed-abdel-hameed-6b36732b8"
-//                 target="_blank"
-//               >
-//                 <i className="fa-brands fa-linkedin-in m-2"></i>
-//               </Link>
-//               <Link
-//                 to="https://api.whatsapp.com/send/?phone=201120203912"
-//                 target="_blank"
-//               >
-//                 <i className="fa-brands fa-whatsapp m-2"></i>
-//               </Link>
-//               <Link
-//                 to="https://www.facebook.com/share/167YmfNBi2/"
-//                 target="_blank"
-//               >
-//                 <i className="fa-brands fa-facebook-f m-2"></i>
-//               </Link>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-
 export function Footer() {
   return (
     <div className="rtl container text-center mt-4">
@@ -196,10 +86,10 @@ const ProductCard = React.memo(
 
           <span
             className={`stock-badge ${
-              product.stock_quantity > 0 ? "in-stock" : "out-of-stock"
+              product.total_quantity > 0 ? "in-stock" : "out-of-stock"
             }`}
           >
-            {product.stock_quantity > 0 ? "متوفر" : "غير متوفر"}
+            {product.total_quantity > 0 ? "متوفر" : "غير متوفر"}
           </span>
 
           <img
@@ -245,7 +135,7 @@ const ProductCard = React.memo(
           <button
             className="cart-btn"
             onClick={onAddToCart}
-            disabled={isLoading || product.stock_quantity <= 0}
+            disabled={isLoading || product.total_quantity <= 0}
           >
             {isLoading && currentProduct === product.id ? (
               "جاري الإضافة..."
@@ -272,15 +162,15 @@ const ProductCard = React.memo(
                   <div className="color-selection" style={{ direction: "rtl" }}>
                     <h6>اختر اللون:</h6>
                     <div className="color-options">
-                      {product.colors.map((color) => (
+                      {product.colors.map((colorObj) => (
                         <div
-                          key={color.id}
+                          key={colorObj.id}
                           className={`color-option ${
-                            localSelectedColor?.id === color.id ? "selected" : ""
+                            localSelectedColor?.id === colorObj.id ? "selected" : ""
                           }`}
-                          onClick={() => handleColorSelection(color)}
+                          onClick={() => handleColorSelection(colorObj)}
                           style={{
-                            backgroundColor: color.color || "#ddd",
+                            backgroundColor: colorObj.color?.hex_code || "#ddd",
                             width: "30px",
                             height: "30px",
                             borderRadius: "50%",
@@ -291,9 +181,9 @@ const ProductCard = React.memo(
                             cursor: "pointer",
                             border: "1px solid #ddd",
                           }}
-                          title={color.name || color.color}
+                          title={colorObj.color?.name || colorObj.color?.hex_code}
                         >
-                          {localSelectedColor?.id === color.id && (
+                          {localSelectedColor?.id === colorObj.id && (
                             <span className="color-check">✓</span>
                           )}
                         </div>
@@ -453,7 +343,11 @@ const handleAddToCartClick = async (clickedProduct) => {
     setProductsWithColors(prevProducts =>
       prevProducts.map(p =>
         p.id === product.id
-          ? { ...p, colors: data.data?.colors || [], selectedColor: null }
+          ? { 
+              ...p, 
+              colors: data.data?.colors?.filter(c => c.is_available) || [], 
+              selectedColor: null 
+            }
           : p
       )
     );
@@ -465,63 +359,126 @@ const handleAddToCartClick = async (clickedProduct) => {
   }
 };
 
+  // const confirmAddToCart = useCallback(
+  //   async (product) => {
+  //     const userToken = localStorage.getItem("user_token");
+  //     if (!userToken) {
+  //       showTempMessage("❌ يجب تسجيل الدخول أولاً!", 3000, () =>
+  //         navigate("/singeup")
+  //       );
+  //       return;
+  //     }
+
+  //     setIsLoading(true);
+  //     setCurrentProduct(product.id);
+
+  //     try {
+  //       const body = {
+  //         product_id: product.id,
+  //         product_type: "mobile",
+  //         quantity: 1,
+  //       };
+
+  //       if (product.colors?.length > 0) {
+  //         if (!product.selectedColor) {
+  //           showTempMessage("❌ يجب اختيار لون للمنتج!", 3000);
+  //           setIsLoading(false);
+  //           return;
+  //         }
+  //         body.product_color_id = product.selectedColor.id;
+  //       }
+
+  //       const response = await fetch(ADD_TO_CART, {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${userToken}`,
+  //         },
+  //         body: JSON.stringify(body),
+  //       });
+
+  //       const result = await response.json();
+  //       if (response.ok) {
+  //         showTempMessage("✔ تمت الإضافة إلى السلة بنجاح!", 3000);
+  //         setOpenProductId(null);
+  //       } else {
+  //         showTempMessage(
+  //           `❌ ${result.message || "حدث خطأ أثناء الإضافة!"}`,
+  //           3000
+  //         );
+  //       }
+  //     } catch (error) {
+  //       showTempMessage("❌ فشل الاتصال بالسيرفر!", 3000);
+  //     } finally {
+  //       setIsLoading(false);
+  //       setCurrentProduct(null);
+  //     }
+  //   },
+  //   [navigate, showTempMessage]
+  // );
+
+
+
   const confirmAddToCart = useCallback(
-    async (product) => {
-      const userToken = localStorage.getItem("user_token");
-      if (!userToken) {
-        showTempMessage("❌ يجب تسجيل الدخول أولاً!", 3000, () =>
-          navigate("/singeup")
+  async (product) => {
+    const userToken = localStorage.getItem("user_token");
+    if (!userToken) {
+      showTempMessage("❌ يجب تسجيل الدخول أولاً!", 3000, () =>
+        navigate("/singeup")
+      );
+      return;
+    }
+
+    setIsLoading(true);
+    setCurrentProduct(product.id);
+
+    try {
+      const body = {
+        product_id: product.id,
+        product_type: "mobile",
+        quantity: 1,
+      };
+
+      if (product.colors?.length > 0) {
+        if (!product.selectedColor) {
+          showTempMessage("❌ يجب اختيار لون للمنتج!", 3000);
+          setIsLoading(false);
+          return;
+        }
+        
+        // هنا نرسل الـ ID الخاص باللون المتاح (product_color_id)
+        body.product_color_id = product.selectedColor.id;
+      }
+
+      const response = await fetch(ADD_TO_CART, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userToken}`,
+        },
+        body: JSON.stringify(body),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        showTempMessage("✔ تمت الإضافة إلى السلة بنجاح!", 3000);
+        setOpenProductId(null);
+      } else {
+        showTempMessage(
+          `❌ ${result.message || "حدث خطأ أثناء الإضافة!"}`,
+          3000
         );
-        return;
       }
+    } catch (error) {
+      showTempMessage("❌ فشل الاتصال بالسيرفر!", 3000);
+    } finally {
+      setIsLoading(false);
+      setCurrentProduct(null);
+    }
+  },
+  [navigate, showTempMessage]
+);
 
-      setIsLoading(true);
-      setCurrentProduct(product.id);
-
-      try {
-        const body = {
-          product_id: product.id,
-          product_type: "mobile",
-          quantity: 1,
-        };
-
-        if (product.colors?.length > 0) {
-          if (!product.selectedColor) {
-            showTempMessage("❌ يجب اختيار لون للمنتج!", 3000);
-            setIsLoading(false);
-            return;
-          }
-          body.product_color_id = product.selectedColor.id;
-        }
-
-        const response = await fetch(ADD_TO_CART, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${userToken}`,
-          },
-          body: JSON.stringify(body),
-        });
-
-        const result = await response.json();
-        if (response.ok) {
-          showTempMessage("✔ تمت الإضافة إلى السلة بنجاح!", 3000);
-          setOpenProductId(null);
-        } else {
-          showTempMessage(
-            `❌ ${result.message || "حدث خطأ أثناء الإضافة!"}`,
-            3000
-          );
-        }
-      } catch (error) {
-        showTempMessage("❌ فشل الاتصال بالسيرفر!", 3000);
-      } finally {
-        setIsLoading(false);
-        setCurrentProduct(null);
-      }
-    },
-    [navigate, showTempMessage]
-  );
 
   const handleFavorite = useCallback(
     async (product) => {

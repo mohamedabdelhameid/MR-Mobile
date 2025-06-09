@@ -92,7 +92,7 @@ const Forgot = () => {
 
         <Box textAlign="center" mt={2}>
           <Typography>
-            <Link to="/singeup" style={{ color: theme.palette.primary.main }}>
+            <Link to="/signeup" style={{ color: theme.palette.primary.main }}>
               العودة إلى تسجيل الدخول
             </Link>
           </Typography>

@@ -326,10 +326,10 @@
 
 //           <span
 //             className={`stock-badge ${
-//               product.stock_quantity > 0 ? "in-stock" : "out-of-stock"
+//               product.total_quantity > 0 ? "in-stock" : "out-of-stock"
 //             }`}
 //           >
-//             {product.stock_quantity > 0 ? "متوفر" : "غير متوفر"}
+//             {product.total_quantity > 0 ? "متوفر" : "غير متوفر"}
 //           </span>
 
 //           <img
@@ -379,8 +379,8 @@
 //           <button
 //             className="cart-btn"
 //             onClick={() => handleAddToCart(product)}
-//             disabled={isLoading || product.stock_quantity <= 0}
-//             aria-disabled={isLoading || product.stock_quantity <= 0}
+//             disabled={isLoading || product.total_quantity <= 0}
+//             aria-disabled={isLoading || product.total_quantity <= 0}
 //           >
 //             {isLoading && currentProduct === product.id ? (
 //               "جاري الإضافة..."
@@ -873,10 +873,10 @@ export default function SearchResult() {
 
           <span
             className={`stock-badge ${
-              product.stock_quantity > 0 ? "in-stock" : "out-of-stock"
+              product.total_quantity > 0 ? "in-stock" : "out-of-stock"
             }`}
           >
-            {product.stock_quantity > 0 ? "متوفر" : "غير متوفر"}
+            {product.total_quantity > 0 ? "متوفر" : "غير متوفر"}
           </span>
 
           <img
@@ -926,8 +926,8 @@ export default function SearchResult() {
           <button
             className="cart-btn"
             onClick={() => handleAddToCart(product)}
-            disabled={isLoading || product.stock_quantity <= 0}
-            aria-disabled={isLoading || product.stock_quantity <= 0}
+            disabled={isLoading || product.total_quantity <= 0}
+            aria-disabled={isLoading || product.total_quantity <= 0}
           >
             {isLoading && currentProduct === product.id ? (
               "جاري الإضافة..."
@@ -1026,7 +1026,7 @@ export default function SearchResult() {
 
   return (
     <>
-      {/* <MyNavbar /> */}
+      <MyNavbar />
       <ScrollToHashElement />
 
       <main className="products-page" style={{ direction: "rtl" }}>

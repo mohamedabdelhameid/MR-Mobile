@@ -31,7 +31,7 @@ root.render(
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
-        <MyNavbar />
+        {/* <MyNavbar /> */}
         <Routes>
 
           <Route path="/" element={<App />} />
@@ -42,7 +42,7 @@ root.render(
           <Route path="/mobiles/:id" element={<ProductDetails />} />
           <Route path="/accessories/:id" element={<AccessoryDetails />} />
           <Route path="/searchresult" element={<SearchComponent />} />
-          <Route path="/singeup" element={<Singup />} />
+          <Route path="/signeup" element={<Singup />} />
           <Route path="/forgot-password" element={< Forgot/>} />
           <Route path="/login" element={< Login/>} />
           <Route path="/resetPassword" element={< VerifyCode/>} />

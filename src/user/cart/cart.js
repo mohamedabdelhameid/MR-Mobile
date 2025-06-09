@@ -16,25 +16,20 @@ import {
   Button,
   IconButton,
   CircularProgress,
-  Fade,
   Paper,
   Grid,
-  Backdrop,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
-import { CloseOutlined } from "@mui/icons-material";
-import { Modal } from "react-bootstrap";
 import PaymentModal from "./modal";
 
 const CART_API = "http://localhost:8000/api/cart";
 const MOBILES_API = "http://localhost:8000/api/mobiles";
 const ACCESSORIES_API = "http://localhost:8000/api/accessories";
 const BRANDS_API = "http://localhost:8000/api/brands";
-const CHECKOUT_PAYMENT =
-  "http://localhost:8000/api/payment/create-checkout-session";
+const COLORS_API = "http://localhost:8000/api/colors";
 
 function Cart() {
   const dispatch = useDispatch();
@@ -46,6 +41,7 @@ function Cart() {
   const [mobiles, setMobiles] = useState([]);
   const [accessories, setAccessories] = useState([]);
   const [brands, setBrands] = useState([]);
+  const [colors, setColors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -54,7 +50,6 @@ function Cart() {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [isClearingCart, setIsClearingCart] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-
 
   useEffect(() => {
     const userToken = localStorage.getItem("user_token");
@@ -67,7 +62,7 @@ function Cart() {
 
     const fetchData = async () => {
       try {
-        const [cartRes, mobilesRes, accessoriesRes, brandsRes] =
+        const [cartRes, mobilesRes, accessoriesRes, brandsRes, colorsRes] =
           await Promise.all([
             fetch(CART_API, {
               headers: {
@@ -77,24 +72,21 @@ function Cart() {
             fetch(MOBILES_API),
             fetch(ACCESSORIES_API),
             fetch(BRANDS_API),
+            fetch(COLORS_API),
           ]);
 
         const cartData = await cartRes.json();
         const mobilesData = await mobilesRes.json();
         const accessoriesData = await accessoriesRes.json();
         const brandsData = await brandsRes.json();
+        const colorsData = await colorsRes.json();
 
-        // تخزين cart_id في الـ state
-        const cartId = cartData.data?.id;
-        if (cartId) {
-          setCartId(cartId); // حفظ cart_id لاستخدامه لاحقًا
-        }
-
-        // تخزين باقي البيانات
-        dispatch(setApiCartItems(cartData.data?.cart_items || []));
+        setCartId(cartData.data?.id || null);
+        dispatch(setApiCartItems(cartData.data?.items || []));
         setMobiles(mobilesData.data || []);
         setAccessories(accessoriesData.data || []);
         setBrands(brandsData.data || []);
+        setColors(colorsData.data || []);
         setLoading(false);
       } catch (err) {
         setError("حدث خطأ أثناء تحميل بيانات السلة");
@@ -107,8 +99,8 @@ function Cart() {
 
   const getProductInfo = (item) => {
     if (item.product_type === "mobile") {
-      const mobile = mobiles.find((m) => m.id === item.product_id);
-      if (!mobile)
+      const mobile = item.product || {};
+      if (!mobile.id) {
         return {
           name: "غير معروف",
           image: "",
@@ -117,39 +109,51 @@ function Cart() {
           specs: [],
           stock_quantity: 0,
         };
+      }
 
-      const brand = brands.find((b) => b.id === mobile.brand_id);
+      // البحث عن اسم الشركة
+      const brand = brands.find(b => b.id === mobile.brand_id);
+      const brandName = brand ? brand.name : "غير معروف";
 
-      const productImage = item.color?.image
-        ? `http://localhost:8000${item.color.image}`
+      // البحث عن معلومات اللون
+      let colorInfo = "غير محدد";
+      let colorHex = "#cccccc";
+      if (item.mobile_color && item.mobile_color.color_id) {
+        const colorObj = colors.find(c => c.id === item.mobile_color.color_id);
+        if (colorObj) {
+          colorInfo = colorObj.name || colorObj.color_code || "غير محدد";
+          colorHex = colorObj.hex_code || "#cccccc";
+        }
+      }
+
+      const productImage = item.mobile_color?.image
+        ? `http://localhost:8000${item.mobile_color.image}`
         : mobile.image_cover
         ? `http://localhost:8000${mobile.image_cover}`
         : "";
 
-      // التعديل هنا: الوصول إلى اللون من كائن color
-      const color = item.color?.color || "غير محدد";
-
       const specs = [
-        { label: "الشركة", value: brand ? brand.name : "غير معروف" },
+        { label: "الشركة", value: brandName },
         {
           label: "المساحة",
           value: mobile.storage ? `${mobile.storage} جيجابايت` : "غير محدد",
         },
-        { label: "اللون", value: color },
+        { label: "اللون", value: colorInfo, colorHex },
       ];
 
       return {
         name: mobile.title,
         image: productImage,
-        brandName: brand ? brand.name : "غير معروف",
-        price: mobile.final_price || mobile.price, // استخدم final_price إذا كان موجوداً
+        brandName: brandName,
+        price: mobile.final_price || mobile.price,
         specs,
-        color,
-        stock_quantity: mobile.stock_quantity,
+        color: colorInfo,
+        colorHex,
+        stock_quantity: item.mobile_color?.stock_quantity || 0,
       };
     } else if (item.product_type === "accessory") {
-      const accessory = accessories.find((a) => a.id === item.product_id);
-      if (!accessory)
+      const accessory = item.product || {};
+      if (!accessory.id) {
         return {
           name: "غير معروف",
           image: "",
@@ -158,25 +162,39 @@ function Cart() {
           specs: [],
           stock_quantity: 0,
         };
+      }
 
-      const brand = brands.find((b) => b.id === accessory.brand_id);
+      // البحث عن اسم الشركة
+      const brand = brands.find(b => b.id === accessory.brand_id);
+      const brandName = brand ? brand.name : "غير معروف";
 
-      // استخراج اللون من العنصر نفسه
-      const color = item.color || accessory.color || "غير محدد";
+      // البحث عن معلومات اللون
+      let colorInfo = "غير محدد";
+      let colorHex = "#cccccc";
+      if (item.accessory_color && item.accessory_color.color_id) {
+        const colorObj = colors.find(c => c.id === item.accessory_color.color_id);
+        if (colorObj) {
+          colorInfo = colorObj.name || colorObj.color_code || "غير محدد";
+          colorHex = colorObj.hex_code || "#cccccc";
+        }
+      } else if (accessory.color) {
+        colorInfo = accessory.color;
+      }
 
       const specs = [
-        { label: "الشركة", value: brand ? brand.name : "غير معروف" },
-        { label: "اللون", value: color },
+        { label: "الشركة", value: brandName },
+        { label: "اللون", value: colorInfo, colorHex },
       ];
 
       return {
         name: accessory.title,
         image: accessory.image ? `http://localhost:8000${accessory.image}` : "",
-        brandName: brand ? brand.name : "غير معروف",
+        brandName: brandName,
         price: accessory.price,
         specs,
-        color,
-        stock_quantity: accessory.stock_quantity,
+        color: colorInfo,
+        colorHex,
+        stock_quantity: item.accessory_color?.stock_quantity || 0,
       };
     }
 
@@ -188,7 +206,6 @@ function Cart() {
       specs: [],
       stock_quantity: 0,
     };
-    // const { name, image, brandName, specs, stock_quantity } = getProductInfo(item);
   };
 
   const updateCartItemQuantity = async (cartItemId, newQuantity) => {
@@ -292,7 +309,7 @@ function Cart() {
       return;
     }
 
-    setIsClearingCart(true); // بدء التحميل
+    setIsClearingCart(true);
 
     try {
       const response = await fetch("http://localhost:8000/api/cart", {
@@ -330,10 +347,20 @@ function Cart() {
     });
   };
 
+  const handleCheckout = () => {
+    setIsCheckingOut(true);
+    setShowPaymentModal(true);
+  };
+
+  const handleClosePaymentModal = () => {
+    setShowPaymentModal(false);
+    setIsCheckingOut(false);
+  };
+
   if (loading)
     return (
       <>
-        {/* <MyNavbar /> */}
+      <MyNavbar />
         <Box
           sx={{
             display: "flex",
@@ -350,69 +377,10 @@ function Cart() {
       </>
     );
 
-  // const handleCheckout = async () => {
-  //   if (!cartId) {
-  //     console.error("Cart ID is not available.");
-  //     return;
-  //   }
-
-  //   setIsCheckingOut(true); // بدء التحميل
-
-  //   const token = localStorage.getItem("user_token");
-
-  //   try {
-  //     const response = await fetch(
-  //       "http://localhost:8000/api/payment/create-checkout-session",
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //         body: JSON.stringify({ cart_id: cartId }), // إضافة cart_id إلى body الطلب
-  //       }
-  //     );
-
-  //     if (!response.ok) {
-  //       throw new Error(
-  //         `Failed to create checkout session: ${response.statusText}`
-  //       );
-  //     }
-
-  //     const data = await response.json();
-  //     console.log("Checkout session data:", data);
-
-  //     if (data.payment_url) {
-  //       window.location.href = data.payment_url;
-  //     } else {
-  //       throw new Error(
-  //         "Failed to create checkout session. No URL in response."
-  //       );
-  //     }
-  //   } catch (error) {
-  //     console.error("Error during checkout:", error);
-  //     Swal.fire(
-  //       "خطأ",
-  //       "حدث خطأ أثناء محاولة الدفع، يرجى المحاولة لاحقاً",
-  //       "error"
-  //     );
-  //   } finally {
-  //     setIsCheckingOut(false); // إيقاف التحميل
-  //   }
-  // };
-
-  const handleCheckout = () => {
-    setIsCheckingOut(true); // بدء التحميل لعرض المودال
-    setShowPaymentModal(true); // فتح نافذة الدفع
-  };
-
-  const handleClosePaymentModal = () => {
-    setShowPaymentModal(false);
-    setIsCheckingOut(false);
-  };
-
   if (error)
     return (
+  <>
+  <MyNavbar />
       <Box
         sx={{
           display: "flex",
@@ -420,16 +388,17 @@ function Cart() {
           alignItems: "center",
           height: "100vh",
         }}
-      >
+        >
         <Typography variant="h5" color="error">
           {error}
         </Typography>
       </Box>
+        </>
     );
 
   return (
     <>
-      {/* <MyNavbar /> */}
+    <MyNavbar />
       <Box
         sx={{
           minHeight: "100vh",
@@ -450,7 +419,6 @@ function Cart() {
             sx={{
               fontWeight: "bold",
               marginBottom: "30px",
-              // color: "#333",
               display: "flex",
               alignItems: "center",
               gap: "10px",
@@ -498,7 +466,6 @@ function Cart() {
               <Box
                 sx={{
                   flex: 3,
-                  // backgroundColor: "white",
                   borderRadius: "12px",
                   boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
                   padding: "20px",
@@ -602,11 +569,14 @@ function Cart() {
                                       width: "20px",
                                       height: "20px",
                                       borderRadius: "50%",
-                                      backgroundColor: spec.value,
+                                      backgroundColor: spec.colorHex,
                                       border: "1px solid #ddd",
                                       display: "inline-block",
                                     }}
                                   />
+                                  <Typography component="span" variant="body2">
+                                    {spec.value}
+                                  </Typography>
                                 </Box>
                               ) : (
                                 <Typography component="span" variant="body2">
@@ -758,7 +728,6 @@ function Cart() {
               <Box
                 sx={{
                   flex: 1,
-                  // backgroundColor: "white",
                   borderRadius: "12px",
                   boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
                   padding: "25px",
@@ -861,8 +830,10 @@ function Cart() {
           )}
         </Box>
 
-          <PaymentModal open={showPaymentModal} onClose={handleClosePaymentModal} />
-
+        <PaymentModal
+          open={showPaymentModal}
+          onClose={handleClosePaymentModal}
+        />
 
         <Footer />
       </Box>
