@@ -1,5 +1,3 @@
-
-
 // import React, { useEffect, useState } from "react";
 // import { useSelector, useDispatch } from "react-redux";
 // import { fetchProducts } from "./productSlice";
@@ -25,6 +23,7 @@
 //   Alert,
 //   Badge,
 //   useTheme,
+//   Tooltip,
 // } from "@mui/material";
 // import CloseIcon from "@mui/icons-material/Close";
 // import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -34,7 +33,6 @@
 
 // const IMAGE_COVER_API = "http://localhost:8000/api/mobiles";
 // const ADD_TO_USER_CART = "http://localhost:8000/api/cart-items";
-// const BRAND_API = `http://localhost:8000/api/brands`;
 // const GET_CART_ITEMS_API = "http://localhost:8000/api/cart";
 
 // function ProductDetails() {
@@ -86,6 +84,8 @@
 //         );
 //         setShowMessage(true);
 //       }
+//     } else {
+//       setCartQuantity(0);
 //     }
 //   }, [cartItems, data, id, selectedColor]);
 
@@ -121,10 +121,16 @@
 
 //         if (json.data) {
 //           setProductDetails(json.data);
-//           setColors(json.data.colors || []); // تعيين الألوان مباشرة من الاستجابة
+//           setColors(json.data.colors || []);
           
 //           if (json.data.image_cover) {
 //             setImageCover(`http://localhost:8000${json.data.image_cover}`);
+//           }
+          
+//           // تحديد اللون الأول المتاح افتراضيًا
+//           const availableColor = json.data.colors?.find(color => color.is_available);
+//           if (availableColor) {
+//             setSelectedColor(availableColor);
 //           }
 //         }
 //       } catch (error) {
@@ -208,6 +214,9 @@
 
 //       setMessageText("✅ تم إضافة المنتج إلى العربة بنجاح!");
 //       setShowMessage(true);
+      
+//       // تحديث كمية السلة بعد الإضافة
+//       fetchCartQuantity();
 //     } catch (error) {
 //       console.error("خطأ في إضافة المنتج:", error);
 //       setMessageText("❌ حدث خطأ أثناء إضافة المنتج");
@@ -222,16 +231,20 @@
 //   };
 
 //   const handleColorSelect = (color) => {
+//     if (!color.is_available) return;
+    
 //     setSelectedColor(color);
 //     setQuantity(1); // إعادة تعيين الكمية عند تغيير اللون
+    
+//     // تغيير الصورة الرئيسية لأول صورة في اللون الجديد
+//     if (color.images?.[0]?.image) {
+//       setMainImage(`http://localhost:8000${color.images[0].image}`);
+//     }
 //   };
 
 //   // جلب كمية السلة عند تحميل المكون
 //   useEffect(() => {
-//     const token = localStorage.getItem("user_token");
-//     if (token) {
-//       fetchCartQuantity();
-//     }
+//     fetchCartQuantity();
 //   }, [id, selectedColor]);
 
 //   const fetchCartQuantity = async () => {
@@ -307,6 +320,9 @@
 //       </Box>
 //     );
 //   }
+
+//   // تحديد الصور المعروضة في المعاينة
+//   const previewImages = selectedColor?.images || data.images || [];
 
 //   return (
 //     <>
@@ -392,7 +408,7 @@
 //                   </Avatar>
 //                 )}
 
-//                 {data.images?.length > 1 && (
+//                 {previewImages.length > 1 && (
 //                   <Box
 //                     sx={{
 //                       display: "flex",
@@ -403,10 +419,16 @@
 //                       width: "100%",
 //                     }}
 //                   >
-//                     {data.images.map((img, index) => (
+//                     {previewImages.map((img, index) => (
 //                       <Box
 //                         key={index}
-//                         onClick={() => setMainImage(img)}
+//                         onClick={() => 
+//                           setMainImage(
+//                             img.image 
+//                               ? `http://localhost:8000${img.image}` 
+//                               : img
+//                           )
+//                         }
 //                         sx={{
 //                           width: 80,
 //                           height: 80,
@@ -414,13 +436,13 @@
 //                           overflow: "hidden",
 //                           cursor: "pointer",
 //                           border:
-//                             mainImage === img
+//                             (img.image ? `http://localhost:8000${img.image}` : img) === mainImage
 //                               ? "2px solid #1976d2"
 //                               : "1px solid #ddd",
 //                         }}
 //                       >
 //                         <img
-//                           src={img}
+//                           src={img.image ? `http://localhost:8000${img.image}` : img}
 //                           alt={`صورة ${index + 1}`}
 //                           style={{
 //                             width: "100%",
@@ -545,37 +567,39 @@
 //                         }}
 //                       >
 //                         {colors.map((color) => (
-//                           <Badge
+//                           <Tooltip 
 //                             key={color.id}
-//                             color="primary"
-//                             badgeContent={
-//                               selectedColor?.id === color.id ? "✓" : ""
-//                             }
-//                             overlap="circular"
+//                             title={`${color.color?.name || 'بدون اسم'}${!color.is_available ? ' (غير متوفر)' : ''}`}
+//                             arrow
 //                           >
-//                             <Box
-//                               onClick={() => handleColorSelect(color)}
-//                               sx={{
-//                                 width: 40,
-//                                 height: 40,
-//                                 borderRadius: "50%",
-//                                 backgroundColor: color.color?.hex_code || "#ccc",
-//                                 border:
-//                                   selectedColor?.id === color.id
-//                                     ? "2px solid primary.main"
-//                                     : "2px solid transparent",
-//                                 "&:hover": {
-//                                   transform: "scale(1.1)",
-//                                   cursor: "pointer",
-//                                 },
-//                                 opacity: color.is_available ? 1 : 0.5,
-//                                 cursor: color.is_available
-//                                   ? "pointer"
-//                                   : "not-allowed",
-//                                 transition: "all 0.2s ease-in-out",
-//                               }}
-//                             />
-//                           </Badge>
+//                             <Badge
+//                               color="primary"
+//                               badgeContent={
+//                                 selectedColor?.id === color.id ? "✓" : ""
+//                               }
+//                               overlap="circular"
+//                             >
+//                               <Box
+//                                 onClick={() => handleColorSelect(color)}
+//                                 sx={{
+//                                   width: 40,
+//                                   height: 40,
+//                                   borderRadius: "50%",
+//                                   backgroundColor: color.color?.hex_code || "#ccc",
+//                                   border:
+//                                     selectedColor?.id === color.id
+//                                       ? "2px solid #1976d2"
+//                                       : "1px solid #ddd",
+//                                   "&:hover": {
+//                                     transform: "scale(1.1)",
+//                                     cursor: color.is_available ? "pointer" : "not-allowed",
+//                                   },
+//                                   opacity: color.is_available ? 1 : 0.5,
+//                                   transition: "all 0.2s ease-in-out",
+//                                 }}
+//                               />
+//                             </Badge>
+//                           </Tooltip>
 //                         ))}
 //                       </Box>
 //                     </Box>
@@ -684,17 +708,6 @@
 //                         {availableQuantity} قطعة
 //                       </span>
 //                     </Typography>
-//                     <Typography variant="subtitle1" sx={{ mt: 1 }}>
-//                       <strong>الكمية في السلة:</strong>{" "}
-//                       <span
-//                         style={{
-//                           color: "blue",
-//                           fontWeight: "bold",
-//                         }}
-//                       >
-//                         {cartQuantity} قطعة
-//                       </span>
-//                     </Typography>
 //                   </Box>
 //                 </CardContent>
 //               </Card>
@@ -732,10 +745,6 @@
 // }
 
 // export default ProductDetails;
-
-
-
-
 
 
 import React, { useEffect, useState } from "react";
@@ -867,11 +876,7 @@ function ProductDetails() {
             setImageCover(`http://localhost:8000${json.data.image_cover}`);
           }
           
-          // تحديد اللون الأول المتاح افتراضيًا
-          const availableColor = json.data.colors?.find(color => color.is_available);
-          if (availableColor) {
-            setSelectedColor(availableColor);
-          }
+          // تم إزالة تحديد اللون الأول المتاح افتراضيًا
         }
       } catch (error) {
         console.error("خطأ في جلب بيانات المنتج:", error);
@@ -1342,6 +1347,11 @@ function ProductDetails() {
                           </Tooltip>
                         ))}
                       </Box>
+                      {!selectedColor && (
+                        <Typography variant="body2" color="error" sx={{ mt: 1 }}>
+                          ⚠️ يرجى اختيار لون
+                        </Typography>
+                      )}
                     </Box>
                   )}
 
@@ -1448,17 +1458,6 @@ function ProductDetails() {
                         {availableQuantity} قطعة
                       </span>
                     </Typography>
-                    {/* <Typography variant="subtitle1" sx={{ mt: 1 }}>
-                      <strong>الكمية في السلة:</strong>{" "}
-                      <span
-                        style={{
-                          color: "blue",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        {cartQuantity} قطعة
-                      </span>
-                    </Typography> */}
                   </Box>
                 </CardContent>
               </Card>

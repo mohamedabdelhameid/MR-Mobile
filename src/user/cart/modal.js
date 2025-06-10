@@ -16,7 +16,7 @@ import {
   Alert,
 } from "@mui/material";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-import imgVFE from "./images/VFECash.jpg";
+// import imgVFE from "./images/VFECash.jpg";
 import imgInsta from "./images/Instapay.jpg";
 
 function PaymentModal({ open, onClose, orderId }) {
@@ -137,17 +137,12 @@ function PaymentModal({ open, onClose, orderId }) {
               control={<Radio />}
               label="InstaPay"
             />
-            <FormControlLabel
-              value="vodafone_cash"
-              control={<Radio />}
-              label="فودافون كاش"
-            />
           </RadioGroup>
 
           {/* QR Code */}
           <Box textAlign="center" mb={2}>
             <img
-              src={paymentMethod === "instapay" ? imgInsta : imgVFE}
+              src={imgInsta}
               alt="QR Code"
               style={{ width: 200, height: 200, objectFit: "contain" }}
             />

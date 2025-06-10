@@ -32,10 +32,9 @@ function AccountInformation() {
         if (!response.ok) {
 
           setTimeout(() => {
-            window.location.reload(); // إعادة تحميل الصفحة
             navigate('/signeup');
           }, 3000);
-          throw new Error("فشل في جلب البيانات، تحقق من التوكين.");
+          throw new Error("فشل في جلب البيانات، يرجى مراجعة تسجيل دخولك.");
         }
         return response.json();
       })
