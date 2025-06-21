@@ -13,6 +13,7 @@ import axios from "axios";
 import { FaHome } from "react-icons/fa";
 import { CircularProgress } from "@mui/material";
 import './login.css';
+import BASE_BACKEND_URL from "../../API/config";
 
 const Signup = () => {
   const theme = useTheme();
@@ -65,87 +66,6 @@ const Signup = () => {
     }
   };
 
-  // const handleSignup = async (e) => {
-  //   e.preventDefault();
-
-  //   if (password !== confirmPassword) {
-  //     setMessage("كلمتا المرور غير متطابقتين");
-  //     return;
-  //   }
-
-  //   setLoading(true);
-  //   setMessage("");
-
-  //   // جهز البيانات لإرسالها
-  //   const data = {
-  //     email,
-  //     password,
-  //     password_confirmation: confirmPassword,
-  //     first_name: firstName,
-  //     last_name: lastName,
-  //     phone_number: phoneNumber,
-  //     country,
-  //     city,
-  //     street,
-  //     apartment,
-  //     floor,
-  //     building,
-  //     postal_code: postalCode,
-  //   };
-
-  //   try {
-  //     const response = await axios.post(
-  //       "http://localhost:8000/api/user/register",
-  //       data
-  //     );
-
-  //     if (response.status === 201) {
-  //       setMessage(
-  //         "✅ تم إنشاء الحساب بنجاح! يرجى التحقق من بريدك الإلكتروني لتأكيد الحساب."
-  //       );
-  //       // setTimeout(() => navigate("/signup"), 3000);
-  //     }
-  //   } catch (error) {
-  //     if (error.response) {
-  //       const errorMessage = error.response.data.error;
-
-  //       let data2 = await error.response.data;
-
-  //       if (typeof data2 === "string") {
-  //         try {
-  //           data2 = JSON.parse(data2);
-  //         } catch (e) {
-  //           console.error("Error parsing error.response.data:", e);
-  //         }
-  //       }
-
-  //       if (
-  //         data2.email &&
-  //         data2.email[0] === "The email has already been taken."
-  //       ) {
-  //         setMessage(
-  //           "⚠ الحساب مسجل بالفعل. يرجى تسجيل الدخول أو استخدام بريد إلكتروني آخر."
-  //         );
-  //       } else if (error.response.status === 400) {
-  //         setMessage("⚠ خطأ في البيانات: " + JSON.stringify(errorMessage));
-  //       } else if (error.response.status === 401) {
-  //         setMessage(
-  //           "🔒 يرجى تأكيد حسابك عبر البريد الإلكتروني المرسل إلى " + email
-  //         );
-  //       } else if (error.response.status === 409) {
-  //         setMessage(
-  //           "⚠ الحساب مسجل بالفعل. يرجى تسجيل الدخول أو استخدام بريد إلكتروني آخر."
-  //         );
-  //       } else {
-  //         setMessage("❌ فشل الاتصال بالخادم. حاول مرة أخرى لاحقًا.");
-  //       }
-  //     } else {
-  //       setMessage("❌ حدث خطأ غير متوقع. حاول مرة أخرى.");
-  //     }
-  //   }
-
-  //   setLoading(false);
-  // };
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -172,7 +92,8 @@ const Signup = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/user/register",
+        // "http://localhost:8000/api/user/register",
+        `${BASE_BACKEND_URL}/user/register`,
         data
       );
 
@@ -231,7 +152,8 @@ const Signup = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/user/resend-verification",
+        // "http://localhost:8000/api/user/resend-verification",
+        `${BASE_BACKEND_URL}/user/resend-verification`,
         { email }
       );
 
@@ -246,31 +168,6 @@ const Signup = () => {
       setLoading(false);
     }
   };
-
-  // const handleResendVarification = async () => {
-  //   // e.preventDefault();
-
-  //   try {
-  //     const response = await axios.post(
-  //       "http://localhost:8000/api/user/resend-verification",
-  //       { email }
-  //     );
-
-  //     if (response.status === 201) {
-  //       setMessage(
-  //         "✅ تم إعادة إرسال رسالة التأكيد بنجاح! يرجى التحقق من بريدك الإلكتروني."
-  //       );
-
-  //       // setTimeout(() => navigate("/signup"), 3000);
-  //     }else if(response.status === 200) {
-  //       setMessage(
-  //         "✅الحساب مسجل بالفعل !"
-  //       );
-  //     }
-  //   } catch (error) {
-  //     setMessage("❌ فشل إعادة الإرسال. حاول مرة أخرى لاحقاً.");
-  // };
-  // };
 
   return (
     <Container maxWidth="sm" sx={{ py: 4 }}>
@@ -301,178 +198,6 @@ const Signup = () => {
         >
           سوف يتم إرسال رسالة عبر البريد الإلكتروني للتأكيد
         </Typography>
-
-        {/* <Box component="form" onSubmit={handleSignup} sx={{ width: '100%', mt: 1 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="الاسم الأول"
-                name="first_name"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                value={formData.first_name}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="الاسم الأخير"
-                name="last_name"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                value={formData.last_name}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
-          </Grid>
-
-          <TextField
-            label="البريد الإلكتروني"
-            name="email"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            type="email"
-          />
-
-          <TextField
-            label="رقم الهاتف"
-            name="phone_number"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={formData.phone_number}
-            onChange={handleChange}
-            required
-          />
-
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="المدينة"
-                name="city"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                value={formData.city}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="الشارع"
-                name="street"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                value={formData.street}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={4}>
-              <TextField
-                label="المبنى"
-                name="building"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                value={formData.building}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <TextField
-                label="الشقة"
-                name="apartment"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                value={formData.apartment}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <TextField
-                label="الطابق"
-                name="floor"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                value={formData.floor}
-                onChange={handleChange}
-              />
-            </Grid>
-          </Grid>
-
-          <TextField
-            label="الرمز البريدي"
-            name="postal_code"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={formData.postal_code}
-            onChange={handleChange}
-          />
-
-          <TextField
-            label="كلمة المرور"
-            name="password"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            type="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-            inputProps={{ minLength: 6 }}
-          />
-
-          <TextField
-            label="تأكيد كلمة المرور"
-            name="password_confirmation"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            type="password"
-            value={formData.password_confirmation}
-            onChange={handleChange}
-            required
-          />
-
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{ mt: 3, mb: 2, py: 1.5 }}
-            disabled={loading}
-          >
-            {loading ? "جاري التسجيل..." : "إنشاء حساب"}
-          </Button>
-
-          {message && (
-            <Typography 
-              color={message.includes("✅") ? "success.main" : "error.main"} 
-              textAlign="center" 
-              sx={{ mt: 2 }}
-            >
-              {message}
-            </Typography>
-          )}
-        </Box> */}
 
         <Box
           component="form"

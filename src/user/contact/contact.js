@@ -6,6 +6,7 @@ import MyNavbar from "../../landing/navbar";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Spinner from "react-bootstrap/Spinner";
+import BASE_BACKEND_URL from "../../API/config";
 
 const Contact = () => {
   const [message, setMessage] = useState("");
@@ -34,7 +35,8 @@ const Contact = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:8000/api/contact-us", {
+      // const response = await fetch("http://localhost:8000/api/contact-us", {
+      const response = await fetch(`${BASE_BACKEND_URL}/contact-us`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -8,6 +8,8 @@ import { FaCartPlus, FaHeart } from "react-icons/fa";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import { Collapse } from "react-bootstrap";
+import BASE_BACKEND_URL from "../API/config";
+import BASE_BACKEND_LOCAHOST_URL from "../API/localhost";
 
 export function Footer() {
   return (
@@ -94,7 +96,8 @@ const ProductCard = React.memo(
 
           <img
             src={
-              `http://localhost:8000${product.image_cover}` ||
+              // `http://localhost:8000${product.image_cover}` ||
+              `${BASE_BACKEND_LOCAHOST_URL}${product.image_cover}` ||
               "/placeholder-product.png"
             }
             alt={product.title}
@@ -244,11 +247,10 @@ function Home() {
   const [productsWithColors, setProductsWithColors] = useState([]);
   const [randomizedProducts, setRandomizedProducts] = useState([]);
 
-  const BASE_URL = "http://localhost:8000/api";
-  const FAVORITE_API = `${BASE_URL}/wishlist`;
-  const ADD_TO_CART = `${BASE_URL}/cart-items`;
-  const BRAND_API = `${BASE_URL}/brands`;
-  const MOBILE_API = `${BASE_URL}/mobiles`;
+  const FAVORITE_API = `${BASE_BACKEND_URL}/wishlist`;
+  const ADD_TO_CART = `${BASE_BACKEND_URL}/cart-items`;
+  const BRAND_API = `${BASE_BACKEND_URL}/brands`;
+  const MOBILE_API = `${BASE_BACKEND_URL}/mobiles`;
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -359,72 +361,12 @@ const handleAddToCartClick = async (clickedProduct) => {
   }
 };
 
-  // const confirmAddToCart = useCallback(
-  //   async (product) => {
-  //     const userToken = localStorage.getItem("user_token");
-  //     if (!userToken) {
-  //       showTempMessage("❌ يجب تسجيل الدخول أولاً!", 3000, () =>
-  //         navigate("/singeup")
-  //       );
-  //       return;
-  //     }
-
-  //     setIsLoading(true);
-  //     setCurrentProduct(product.id);
-
-  //     try {
-  //       const body = {
-  //         product_id: product.id,
-  //         product_type: "mobile",
-  //         quantity: 1,
-  //       };
-
-  //       if (product.colors?.length > 0) {
-  //         if (!product.selectedColor) {
-  //           showTempMessage("❌ يجب اختيار لون للمنتج!", 3000);
-  //           setIsLoading(false);
-  //           return;
-  //         }
-  //         body.product_color_id = product.selectedColor.id;
-  //       }
-
-  //       const response = await fetch(ADD_TO_CART, {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: `Bearer ${userToken}`,
-  //         },
-  //         body: JSON.stringify(body),
-  //       });
-
-  //       const result = await response.json();
-  //       if (response.ok) {
-  //         showTempMessage("✔ تمت الإضافة إلى السلة بنجاح!", 3000);
-  //         setOpenProductId(null);
-  //       } else {
-  //         showTempMessage(
-  //           `❌ ${result.message || "حدث خطأ أثناء الإضافة!"}`,
-  //           3000
-  //         );
-  //       }
-  //     } catch (error) {
-  //       showTempMessage("❌ فشل الاتصال بالسيرفر!", 3000);
-  //     } finally {
-  //       setIsLoading(false);
-  //       setCurrentProduct(null);
-  //     }
-  //   },
-  //   [navigate, showTempMessage]
-  // );
-
-
-
   const confirmAddToCart = useCallback(
   async (product) => {
     const userToken = localStorage.getItem("user_token");
     if (!userToken) {
       showTempMessage("❌ يجب تسجيل الدخول أولاً!", 3000, () =>
-        navigate("/singeup")
+        navigate("/signeup")
       );
       return;
     }
@@ -486,7 +428,7 @@ const handleAddToCartClick = async (clickedProduct) => {
       const userId = localStorage.getItem("user_id");
       if (!userToken || !userId) {
         showTempMessage("❌ يجب تسجيل الدخول أولاً!", 3000, () =>
-          navigate("/singeup")
+          navigate("/signeup")
         );
         return;
       }

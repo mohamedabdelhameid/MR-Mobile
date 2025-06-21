@@ -2,6 +2,7 @@ import { Box, Button, CircularProgress, TextField, Typography, useTheme } from "
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaSignInAlt, FaHome } from "react-icons/fa";
+import BASE_BACKEND_URL from "../../API/config";
 
 const VerifyCode = () => {
   const theme = useTheme();
@@ -33,7 +34,8 @@ const VerifyCode = () => {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/user/password/reset",
+        // "http://127.0.0.1:8000/api/user/password/reset",
+        `${BASE_BACKEND_URL}/user/password/reset`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

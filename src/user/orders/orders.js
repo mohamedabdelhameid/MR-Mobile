@@ -15,8 +15,11 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
+import BASE_BACKEND_URL from '../../API/config';
+import BASE_BACKEND_LOCAHOST_URL from '../../API/localhost';
 
-const API_URL = "http://localhost:8000/api/user/orders";
+// const API_URL = "http://localhost:8000/api/user/orders";
+const API_URL = `${BASE_BACKEND_URL}/user/orders`;
 
 const UserOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -147,7 +150,8 @@ const UserOrders = () => {
                   <Grid container spacing={2}>
                     <Grid item xs={4}>
                       <img
-                        src={`http://localhost:8000${item.product.image || item.product.image_cover}`}
+                        // src={`http://localhost:8000${item.product.image || item.product.image_cover}`}
+                        src={`${BASE_BACKEND_LOCAHOST_URL}${item.product.image || item.product.image_cover}`}
                         alt={item.product.title}
                         style={{ width: '100%', borderRadius: 8 }}
                       />

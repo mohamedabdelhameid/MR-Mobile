@@ -18,6 +18,7 @@ import {
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 // import imgVFE from "./images/VFECash.jpg";
 import imgInsta from "./images/Instapay.jpg";
+import BASE_BACKEND_URL from "../../API/config";
 
 function PaymentModal({ open, onClose, orderId }) {
   const [paymentMethod, setPaymentMethod] = useState("instapay");
@@ -50,7 +51,8 @@ function PaymentModal({ open, onClose, orderId }) {
 
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:8000/api/orders", {
+      // const response = await fetch("http://localhost:8000/api/orders", {
+      const response = await fetch(`${BASE_BACKEND_URL}/orders`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

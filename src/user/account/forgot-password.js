@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaSignInAlt, FaHome } from "react-icons/fa";
 import { CircularProgress } from "@mui/material";
+import BASE_BACKEND_URL from "../../API/config";
 
 const Forgot = () => {
   const theme = useTheme();
@@ -28,7 +29,8 @@ const Forgot = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/user/password/forgot",
+        // "http://localhost:8000/api/user/password/forgot",
+        `${BASE_BACKEND_URL}/user/password/forgot`,
         {
           email: trimmedEmail,
         }

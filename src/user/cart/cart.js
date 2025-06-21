@@ -24,12 +24,19 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
 import PaymentModal from "./modal";
+import BASE_BACKEND_URL from "../../API/config";
+import BASE_BACKEND_LOCAHOST_URL from "../../API/localhost";
 
-const CART_API = "http://localhost:8000/api/cart";
-const MOBILES_API = "http://localhost:8000/api/mobiles";
-const ACCESSORIES_API = "http://localhost:8000/api/accessories";
-const BRANDS_API = "http://localhost:8000/api/brands";
-const COLORS_API = "http://localhost:8000/api/colors";
+// const CART_API = "http://localhost:8000/api/cart";
+const CART_API = `${BASE_BACKEND_URL}/cart`;
+// const MOBILES_API = "http://localhost:8000/api/mobiles";
+const MOBILES_API = `${BASE_BACKEND_URL}/mobiles`;
+// const ACCESSORIES_API = "http://localhost:8000/api/accessories";
+const ACCESSORIES_API = `${BASE_BACKEND_URL}/accessories`;
+// const BRANDS_API = "http://localhost:8000/api/brands";
+const BRANDS_API = `${BASE_BACKEND_URL}/brands`;
+// const COLORS_API = "http://localhost:8000/api/colors";
+const COLORS_API = `${BASE_BACKEND_URL}/colors`;
 
 function Cart() {
   const dispatch = useDispatch();
@@ -127,9 +134,11 @@ function Cart() {
       }
 
       const productImage = item.mobile_color?.image
-        ? `http://localhost:8000${item.mobile_color.image}`
+        // ? `http://localhost:8000${item.mobile_color.image}`
+        ? `${BASE_BACKEND_LOCAHOST_URL}${item.mobile_color.image}`
         : mobile.image_cover
-        ? `http://localhost:8000${mobile.image_cover}`
+        // ? `http://localhost:8000${mobile.image_cover}`
+        ? `${BASE_BACKEND_LOCAHOST_URL}${mobile.image_cover}`
         : "";
 
       const specs = [
@@ -188,7 +197,8 @@ function Cart() {
 
       return {
         name: accessory.title,
-        image: accessory.image ? `http://localhost:8000${accessory.image}` : "",
+        // image: accessory.image ? `http://localhost:8000${accessory.image}` : "",
+        image: accessory.image ? `${BASE_BACKEND_LOCAHOST_URL}${accessory.image}` : "",
         brandName: brandName,
         price: accessory.price,
         specs,
@@ -224,7 +234,8 @@ function Cart() {
 
     try {
       const response = await fetch(
-        `http://localhost:8000/api/cart-items/${cartItemId}`,
+        // `http://localhost:8000/api/cart-items/${cartItemId}`,
+        `${BASE_BACKEND_URL}/cart-items/${cartItemId}`,
         {
           method: "PATCH",
           headers: {
@@ -280,7 +291,8 @@ function Cart() {
 
     try {
       const response = await fetch(
-        `http://localhost:8000/api/cart-items/${cartItemId}`,
+        // `http://localhost:8000/api/cart-items/${cartItemId}`,
+        `${BASE_BACKEND_URL}/cart-items/${cartItemId}`,
         {
           method: "DELETE",
           headers: {
@@ -312,7 +324,8 @@ function Cart() {
     setIsClearingCart(true);
 
     try {
-      const response = await fetch("http://localhost:8000/api/cart", {
+      // const response = await fetch("http://localhost:8000/api/cart", {
+      const response = await fetch(`${BASE_BACKEND_URL}/cart`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${userToken}`,

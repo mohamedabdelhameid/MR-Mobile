@@ -17,8 +17,11 @@ import { useNavigate } from "react-router-dom";
 import MyNavbar from "../../landing/navbar";
 import "./favourite.css";
 import { Footer } from "../../landing/home";
+import BASE_BACKEND_URL from "../../API/config";
+import BASE_BACKEND_LOCAHOST_URL from "../../API/localhost";
 
-const API_URL = "http://localhost:8000/api/wishlist";
+// const API_URL = "http://localhost:8000/api/wishlist";
+const API_URL = `${BASE_BACKEND_URL}/wishlist`;
 
 const Favorites = () => {
   const [favorites, setFavorites] = useState([]);
@@ -123,10 +126,12 @@ const Favorites = () => {
 
     return product.product_type === "mobile"
       ? product.product.image_cover
-        ? `http://localhost:8000${product.product.image_cover}`
+        // ? `http://localhost:8000${product.product.image_cover}`
+        ? `${BASE_BACKEND_LOCAHOST_URL}${product.product.image_cover}`
         : "/placeholder-mobile.png"
       : product.product.image
-      ? `http://localhost:8000${product.product.image}`
+      // ? `http://localhost:8000${product.product.image}`
+      ? `${BASE_BACKEND_LOCAHOST_URL}${product.product.image}`
       : "/placeholder-accessory.png";
   };
 

@@ -2,6 +2,7 @@ import { Box, Button, CircularProgress, TextField, Typography, useTheme } from "
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaSignInAlt, FaHome } from "react-icons/fa";
+import BASE_BACKEND_URL from "../../API/config";
 
 const Signup = () => {
   const theme = useTheme();
@@ -36,7 +37,8 @@ const Signup = () => {
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/user/login", {
+      // const response = await fetch("http://127.0.0.1:8000/api/user/login", {
+      const response = await fetch(`${BASE_BACKEND_URL}/user/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

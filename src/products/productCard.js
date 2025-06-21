@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { addToCart } from '../user/cart/cartSlice';
 import './productCard.css';
 import { FaCartPlus } from 'react-icons/fa';
+import BASE_BACKEND_LOCAHOST_URL from '../API/localhost';
 
 function ProductCard({ data }) {
   const navigate = useNavigate();
@@ -19,7 +20,8 @@ function ProductCard({ data }) {
     <div className="div-1 bblockk">
       <img
         className='img-fluid'
-        src={`http://localhost:8000${data.image_cover}`}
+        // `http://localhost:8000${data.image_cover}`
+        src={`${BASE_BACKEND_LOCAHOST_URL}${data.image_cover}`}
         alt={data.title || "Product Image"}
         loading="lazy"
         style={{ cursor: "pointer" }}

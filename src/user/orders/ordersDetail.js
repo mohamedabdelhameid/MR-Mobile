@@ -28,12 +28,19 @@ import moment from "moment";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Footer } from "../../landing/home";
 import MyNavbar from "../../landing/navbar";
+import BASE_BACKEND_URL from "../../API/config";
+import BASE_BACKEND_LOCAHOST_URL from "../../API/localhost";
 
-const API_URL = "http://localhost:8000/api/orders";
-const CART_API = "http://localhost:8000/api/cart";
-const MOBILES_API = "http://localhost:8000/api/mobiles";
-const ACCESSORIES_API = "http://localhost:8000/api/accessories";
-const BRANDS_API = "http://localhost:8000/api/brands";
+// const API_URL = "http://localhost:8000/api/orders";
+const API_URL = `${BASE_BACKEND_URL}/orders`;
+// const CART_API = "http://localhost:8000/api/cart";
+const CART_API = `${BASE_BACKEND_URL}/cart`;
+// const MOBILES_API = "http://localhost:8000/api/mobiles";
+const MOBILES_API = `${BASE_BACKEND_URL}/mobiles`;
+// const ACCESSORIES_API = "http://localhost:8000/api/accessories";
+const ACCESSORIES_API = `${BASE_BACKEND_URL}/accessories`;
+// const BRANDS_API = "http://localhost:8000/api/brands";
+const BRANDS_API = `${BASE_BACKEND_URL}/brands`;
 
 const OrderDetails = () => {
   const { id } = useParams();
@@ -125,7 +132,8 @@ const OrderDetails = () => {
       const imageUrl = selectedColor?.image || mobile.image_cover || mobile.image;
 
       return {
-        image: imageUrl ? `http://localhost:8000${imageUrl}` : "",
+        // image: imageUrl ? `http://localhost:8000${imageUrl}` : "",
+        image: imageUrl ? `${BASE_BACKEND_LOCAHOST_URL}${imageUrl}` : "",
         color: item.color || "غير محدد",
       };
     }
@@ -136,7 +144,8 @@ const OrderDetails = () => {
       if (!accessory) return { image: "", color: "غير محدد" };
 
       return {
-        image: accessory.image ? `http://localhost:8000${accessory.image}` : "",
+        // image: accessory.image ? `http://localhost:8000${accessory.image}` : "",
+        image: accessory.image ? `${BASE_BACKEND_LOCAHOST_URL}${accessory.image}` : "",
         color: item.color || accessory.color || "غير محدد",
       };
     }

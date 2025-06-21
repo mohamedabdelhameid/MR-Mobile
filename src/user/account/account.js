@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"; // لاستخدام التوجي
 import MyNavbar from "../../landing/navbar";
 import UserOrders from "../orders/orders";
 import { Footer } from "../../landing/home";
+import BASE_BACKEND_URL from "../../API/config";
 
 function AccountInformation() {
   const [account, setAccount] = useState(null);
@@ -21,7 +22,8 @@ function AccountInformation() {
       return;
     }
 
-    fetch("http://localhost:8000/api/user/getaccount", {
+    // fetch("http://localhost:8000/api/user/getaccount", {
+    fetch(`${BASE_BACKEND_URL}/user/getaccount`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -52,7 +54,8 @@ function AccountInformation() {
     setLogoutLoading(true); // بدء التحميل
     const userToken = localStorage.getItem("user_token");
 
-    fetch("http://localhost:8000/api/user/logout", {
+    // fetch("http://localhost:8000/api/user/logout", {
+    fetch(`${BASE_BACKEND_URL}/user/logout`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
